@@ -18,6 +18,24 @@ assignees: ''
 - [ ] O sistema deve permitir cadastrar uma entrega com data e horário.  
 - [ ] Deve validar se há disponibilidade de docas antes de confirmar o agendamento.  
 
+### 🚀 Critérios de Desenvolvimento  
+- [ ] Escrever Testes TDD  
+- [ ] Documentar no Swagger  
+- [ ] Código deve seguir padrões de linting e boas práticas  
+
+### 🔗 Dependências  
+<!-- Esta tarefa depende de alguma outra issue? Liste-as aqui. -->  
+- [ ] Depende da issue #XYZ 
+
+### 🚀 Critérios de Desenvolvimento  
+- [ ] Escrever Testes TDD  
+- [ ] Documentar no Swagger  
+- [ ] Código deve seguir padrões de linting e boas práticas como SOLID 
+
+### 🔗 Dependências  
+<!-- Esta tarefa depende de alguma outra issue? Liste-as aqui. -->  
+- [ ] Depende da issue #XYZ 
+
 ### 🔗 Referências  
 <!-- Adicione links úteis, como documentação ou issues relacionadas. -->  
 - [Design da tela de agendamentos](#)  
