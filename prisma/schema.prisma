@@ -15,101 +15,24 @@ datasource db {
 
 enum Role {
   ADMIN
-  CONSUMER
+  STUDENT
 }
 
-enum OrderStatus {
-  OPENED
-  RECEIVED
-  PREPARING
-  DISPATCHED
-  DELIVERED
-}
 
 model User {
   id                     String    @id @default(uuid())
-  name                   String
   email                  String    @unique
   password               String
+  course                 String
   emailVerified          Boolean   @default(false) @map("email_verified")
   emailTokenExpiry       DateTime? @map("email_token_expiry")
   emailVerificationToken String?   @map("email_verification_token")
+  resetPasswordTokenExpiry       DateTime? @map("reset_password_token_expiry")
+  resetPasswordToken String?   @map("reset_password_token")
   createdAt              DateTime  @default(now()) @map("created_at")
   updatedAt              DateTime  @updatedAt @map("updated_at")
-  role                   Role      @default(CONSUMER)
+  role                   Role      @default(STUDENT)
 
-  consumer Consumer?
 
   @@map("users")
-}
-
-model Consumer {
-  id        String   @id @default(uuid())
-  userId    String   @unique @map("user_id")
-  fullName  String   @map("full_name")
-  contact   String
-  address   String
-  status    Boolean  @default(true)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  user  User    @relation(fields: [userId], references: [id])
-  Order Order[]
-
-  @@map("consumers")
-}
-
-model Product {
-  id          String   @id @default(uuid())
-  name        String
-  description String
-  price       Decimal  @db.Money
-  stock       Int
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  OrderItem OrderItem[]
-
-  @@map("products")
-}
-
-model Order {
-  id         String      @id @default(uuid())
-  consumerId String      @map("consumer_id")
-  status     OrderStatus @default(OPENED)
-  total      Decimal     @default(0) @db.Money
-  closedAt   DateTime?   @map("closed_at")
-  createdAt  DateTime    @default(now()) @map("created_at")
-  updatedAt  DateTime    @updatedAt @map("updated_at")
-
-  consumer  Consumer    @relation(fields: [consumerId], references: [id])
-  OrderItem OrderItem[]
-
-  @@map("orders")
-}
-
-model OrderItem {
-  id        String   @id @default(uuid())
-  orderId   String   @map("order_id")
-  productId String   @map("product_id")
-  quantity  Int
-  unitPrice Decimal  @map("unit_price") @db.Money
-  subtotal  Decimal  @db.Money
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  order   Order   @relation(fields: [orderId], references: [id])
-  product Product @relation(fields: [productId], references: [id])
-
-  @@map("order_items")
-}
-
-model SalesReport {
-  id       String  @id @default(uuid())
-  period   String
-  total    Decimal @db.Money
-  products Int
-  path     String
-
-  @@map("sales_reports")
 }

@@ -1,10 +1,6 @@
 import { z } from 'zod';
 
 export const UserRegisterSchema = z.object({
-  name: z.string({
-    invalid_type_error: 'O nome precisa ser uma string',
-    required_error: 'O nome é obrigatório',
-  }),
   email: z
     .string({
       invalid_type_error: 'O e-mail precisa ser uma string',
@@ -18,7 +14,11 @@ export const UserRegisterSchema = z.object({
       invalid_type_error: 'A senha precisa ser uma string',
       required_error: 'A senha é obrigatória',
     })
-    .min(6, {
+    .min(8, {
       message: 'A senha precisa ter no mínimo 6 caracteres',
+    }),
+    course: z.string({
+      invalid_type_error: 'O curso precisa ser uma string',
+      required_error: 'O curso é obrigatório',
     }),
 });

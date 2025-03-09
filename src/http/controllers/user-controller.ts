@@ -10,6 +10,9 @@ import { makeUserRegisterUseCase } from '@use-cases/factories/user/make-user-reg
 import { makeUserDeleteUseCase } from '@use-cases/factories/user/make-delete-use-case';
 import { makeUserAuthenticateUseCase } from '@use-cases/factories/user/make-authenticate-use-case';
 import { verifyPermission } from '@http/middlewares/verify-permission';
+import { VerifyPasswordSchema } from '@DTOs/user/verify-password';
+import { makeUserVerifyPasswordUseCase } from '@use-cases/factories/user/make-user-verify-password-use-case';
+import { makeUserResetPasswordUseCase } from '@use-cases/factories/user/make-user-reset-password-use-case';
 
 class UserController {
   async register(req: Request, res: Response, next: NextFunction) {
@@ -43,6 +46,48 @@ class UserController {
 
       res.status(200).json({
         message: 'E-mail verificado com sucesso!',
+      });
+
+      return next();
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async verifyPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email, token, newPassword } = VerifyPasswordSchema.parse(
+        req.body,
+      );
+
+      const verifyPasswordUseCase = makeUserVerifyPasswordUseCase();
+
+      await verifyPasswordUseCase.execute({
+        email,
+        token,
+        newPassword,
+      });
+
+      res.status(200).json({
+        message: 'Senha alterada com sucesso!',
+      });
+
+      return next();
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async resetPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email } = req.params;
+
+      const resetPasswordUseCase = makeUserResetPasswordUseCase();
+
+      await resetPasswordUseCase.execute({ email });
+
+      res.status(200).json({
+        message: 'E-mail de recuperação de senha enviado com sucesso!',
       });
 
       return next();

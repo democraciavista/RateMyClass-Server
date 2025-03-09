@@ -1,54 +1,50 @@
 import { User } from '@prisma/client';
-import { compare } from 'bcryptjs';
-
+import { compare, hash } from 'bcryptjs';
 import { IUserRepository } from '@repositories/interface/user-repository';
-
 import { NotFoundError } from '@errors/not-found-error';
 import { InvalidTokenError } from '@errors/invalid-token-error';
-import { AlreadyExistsError } from '@errors/already-exists-error';
 
-interface VerifyEmailUseCaseRequest {
+interface VerifyPasswordUseCaseRequest {
   email: string;
   token: string;
+  newPassword: string;
 }
 
-interface VerifyEmailUseCaseResponse {
+interface VerifyPasswordUseCaseResponse {
   user: User;
 }
 
-export class VerifyEmailUseCase {
+export class VerifyPasswordUseCase {
   constructor(private userRepository: IUserRepository) {}
 
   async execute(
-    data: VerifyEmailUseCaseRequest,
-  ): Promise<VerifyEmailUseCaseResponse> {
+    data: VerifyPasswordUseCaseRequest,
+  ): Promise<VerifyPasswordUseCaseResponse> {
     const user = await this.userRepository.findByEmail(data.email);
 
     if (!user) {
       throw new NotFoundError('Usuário não encontrado');
     }
-    if (user.emailVerified) {
-      throw new AlreadyExistsError('Email já verificado');
-    }
 
-    if (!user.emailVerificationToken || !user.emailTokenExpiry) {
+    if (!user.resetPasswordToken || !user.resetPasswordTokenExpiry) {
       throw new InvalidTokenError();
     }
 
-    if (user.emailTokenExpiry < new Date()) {
+    if (user.resetPasswordTokenExpiry < new Date()) {
       throw new InvalidTokenError();
     }
 
-    const isTokenValid = await compare(data.token, user.emailVerificationToken);
+    const isTokenValid = await compare(data.token, user.resetPasswordToken);
 
     if (!isTokenValid) {
       throw new InvalidTokenError();
     }
+    const hashedPassword = await hash(data.newPassword, 8);
 
     const userUpdated = await this.userRepository.save(user.id, {
-      emailVerified: true,
-      emailVerificationToken: null,
-      emailTokenExpiry: null,
+      resetPasswordToken: null,
+      resetPasswordTokenExpiry: null,
+      password: hashedPassword,
     });
 
     return {

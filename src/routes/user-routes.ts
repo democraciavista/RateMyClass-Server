@@ -7,6 +7,8 @@ const userRouter = Router();
 
 userRouter.route('/').post(UserController.register);
 userRouter.route('/verify-email').post(UserController.verifyEmail);
+userRouter.route('/verify-password').post(UserController.verifyPassword);
+userRouter.route('/reset-password/:email').get(UserController.resetPassword);
 userRouter.route('/sessions').post(UserController.authenticate);
 userRouter.route('/:userId').delete([verifyPermission], UserController.delete);
 
