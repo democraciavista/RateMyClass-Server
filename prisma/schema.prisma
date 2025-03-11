@@ -39,9 +39,13 @@ model User {
   role                   Role      @default(CONSUMER)
 
   consumer Consumer?
+    // Relacionamentos
+  avaliacoes Avaliacao[] // Um usuário pode fazer muitas avaliações
+
 
   @@map("users")
 }
+
 
 model Consumer {
   id        String   @id @default(uuid())
@@ -112,4 +116,82 @@ model SalesReport {
   path     String
 
   @@map("sales_reports")
+}
+
+model Disciplina {
+  id          String       @id @default(uuid())
+  codigo      String       @unique
+  nome        String
+  professor   String
+  centro      String
+  periodo     String       // Formato: YYYY.P (ex: 2024.1, 2023.2)
+  tipo        String
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  // Relacionamentos
+  avaliacoes  Avaliacao[]  // Uma disciplina tem muitas avaliações
+  materiais   Material[]   // Uma disciplina tem muitos materiais
+  estatisticas Estatistica[] // Uma disciplina tem muitas estatísticas
+
+  @@map("disciplinas")
+}
+
+model Avaliacao {
+  id                     String    @id @default(uuid())
+  disciplinaId           String    @map("disciplina_id")
+  usuarioId              String    @map("usuario_id")
+  curso                  String
+  codigo                 String
+  passouDePrimeira       Boolean   @map("passou_de_primeira")
+  mediaFinal             Float     @map("media_final")
+  notaDidaticaProfessor  Float     @map("nota_didatica_professor")
+  periodoQuePagou        String    @map("periodo_que_pagou") // Formato: YYYY.P
+  nomeDisciplina         String
+  cargaHoraria           String    @map("carga_horaria") // Ex: "60hr"
+  professor              String
+  desistiuDaCadeira      Boolean   @map("desistiu_da_cadeira")
+  nivelDificuldade       Int       @map("nivel_dificuldade")
+  comentario             String
+  recomendacao           String
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  disciplina Disciplina @relation(fields: [disciplinaId], references: [id])
+  usuario    User       @relation(fields: [usuarioId], references: [id])
+
+  @@map("avaliacoes")
+}
+
+
+model Material {
+  id           String    @id @default(uuid())
+  disciplinaId String    @map("disciplina_id")
+  titulo       String
+  descricao    String
+  url          String
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  disciplina Disciplina @relation(fields: [disciplinaId], references: [id])
+
+  @@map("materiais")
+}
+
+model Estatistica {
+  id                     String    @id @default(uuid())
+  disciplinaId           String    @map("disciplina_id")
+  totalAvaliacoes        Int       @map("total_avaliacoes")
+  mediaNotas             Float     @map("media_notas")
+  mediaNotaDidatica      Float     @map("media_nota_didatica")
+  mediaNivelDificuldade  Float     @map("media_nivel_dificuldade")
+  taxaDesistencia        Float     @map("taxa_desistencia") // Em porcentagem (ex: 15.5)
+  notaDisciplina         Float     @map("nota_disciplina") // Média geral da disciplina (0 a 10)
+  taxaAprovacao          Float     @map("taxa_aprovacao") // Em porcentagem (ex: 75.0)
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  disciplina Disciplina @relation(fields: [disciplinaId], references: [id])
+
+  @@map("estatisticas")
 }

@@ -15,12 +15,21 @@
     "emitDecoratorMetadata": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": "./",
+    "baseUrl": "./src", // Define a pasta base como "src"
     "strict": true,
     "paths": {
-      "@*": ["./src/*"]
+      "@app": ["app"],
+      "@use-cases/*": ["use-cases/*"],
+      "@repositories/*": ["repositories/*"],
+      "@entities/*": ["entities/*"],
+      "@utils/*": ["utils/*"],
+      "@http/*": ["http/*"],
+      "@database/*": ["database/*"] 
     }
+
+
   },
   "include": ["src/**/*"],
-  "exclude": ["tests"]
+  "exclude": ["tests", "node_modules", "dist"]
 }
+

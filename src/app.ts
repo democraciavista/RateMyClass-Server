@@ -1,19 +1,10 @@
-import express, { type Express } from 'express';
-import swaggerUi from 'swagger-ui-express';
+import 'dotenv/config';
+import './env';
+import app from './server';; 
+import '@database';
 
-import swaggerDocument from '@docs';
-import routes from '@routes';
-
-import errorHandler from '@http/middlewares/error-handler';
-
-const app: Express = express();
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.use(routes);
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-app.use(errorHandler);
-
-export default app;
+app.listen(process.env.SERVER_PORT, () => {
+  console.log(
+    `🚀 Server is running on http://localhost:${process.env.SERVER_PORT}`,
+  );
+});
