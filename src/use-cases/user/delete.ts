@@ -13,7 +13,7 @@ export class DeleteUseCase {
   async execute(id: string): Promise<DeleteUseCaseResponse> {
     const userAlreadyExists = await this.userRepository.findById(id);
     if (!userAlreadyExists) {
-      new NotFoundError('User not found');
+      new NotFoundError('Usuário não encontrado');
     }
     const user = await this.userRepository.delete(id);
 

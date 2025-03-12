@@ -6,4 +6,5 @@ export interface IUserRepository {
   findByEmail: (email: string) => Promise<User | null>;
   delete: (id: string) => Promise<User>;
   save: (id: string, data: Prisma.UserUpdateInput) => Promise<User>;
+  findAll: () => Promise<User[]>;
 }

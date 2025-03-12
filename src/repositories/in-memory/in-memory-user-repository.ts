@@ -1,3 +1,4 @@
+import { NotFoundError } from '@errors/not-found-error';
 import { Prisma, User } from '@prisma/client';
 import { IUserRepository } from '@repositories/interface/user-repository';
 import { randomUUID } from 'node:crypto';
@@ -50,7 +51,7 @@ export class InMemoryUserRepository implements IUserRepository {
     const userIndex = this.items.findIndex((item) => item.id === id);
 
     if (userIndex === -1) {
-      throw new Error('User not found');
+      throw new NotFoundError('Usuário não encontrado');
     }
 
     const user = this.items[userIndex];
@@ -72,5 +73,8 @@ export class InMemoryUserRepository implements IUserRepository {
     }
 
     return this.items[userIndex];
+  }
+  async findAll() {
+    return this.items;
   }
 }

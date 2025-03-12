@@ -4,14 +4,16 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+
 
 enum Role {
   ADMIN
@@ -33,6 +35,66 @@ model User {
   updatedAt              DateTime  @updatedAt @map("updated_at")
   role                   Role      @default(STUDENT)
 
+  materials              Material[]
+  reactions              Reaction[]
 
   @@map("users")
 }
+
+model Teste {
+  name String
+  id   Int @id @default(autoincrement())
+}
+model Subjects {
+  id          String    @id @default(uuid())
+  name        String
+  couse       String
+  professor   String
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  materials   Material[]
+  reactions   Reaction[]
+
+  @@map("subjects")
+}
+
+model Material {
+  id         String    @id @default(uuid())
+  title       String
+  link        String
+  userId      String    @map("user_id")
+  user        User      @relation(fields: [userId], references: [id],onDelete:Cascade)
+  subject     Subjects  @relation(fields: [subjectId], references: [id],onDelete:Cascade)
+  subjectId   String    @map("subject_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  reactions   Reaction[]
+
+  @@map("materials")
+}
+
+model Reaction {
+  id         String    @id @default(uuid())
+  type       ReactionType
+  userId     String    @map("user_id")
+  user       User      @relation(fields: [userId], references: [id],onDelete:Cascade)
+  materialId String?    @map("material_id")
+  material   Material?  @relation(fields: [materialId], references: [id],onDelete:Cascade)
+  subjectId  String?    @map("subject_id")
+  subject    Subjects?  @relation(fields: [subjectId], references: [id],onDelete:Cascade)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@unique([userId, materialId, type])
+  @@unique([userId, subjectId, type])
+
+  @@map("reactions")
+}
+
+enum ReactionType {
+  LIKE
+  REPORT
+  FAVORITE
+}
+
+

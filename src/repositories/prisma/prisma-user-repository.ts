@@ -34,4 +34,10 @@ export class PrismaUserRepository implements IUserRepository {
 
     return user;
   }
+  async findAll(): Promise<User[]> {
+    //getvalues
+    console.log('🔥 Prisma importado:', Object.keys(prisma));
+
+    return [];
+  }
 }

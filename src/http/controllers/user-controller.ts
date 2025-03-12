@@ -1,18 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-
 import { UserRegisterSchema } from '@DTOs/user/register';
 import { VerifyEmailSchema } from '@DTOs/user/verify-email';
 import { AuthenticateSchema } from '@DTOs/user/authenticate';
-
-import { makeUserVerifyEmailUseCase } from '@use-cases/factories/user/make-user-verify-email-use-case';
-import { makeUserRegisterUseCase } from '@use-cases/factories/user/make-user-register-use-case';
-import { makeUserDeleteUseCase } from '@use-cases/factories/user/make-delete-use-case';
-import { makeUserAuthenticateUseCase } from '@use-cases/factories/user/make-authenticate-use-case';
-import { verifyPermission } from '@http/middlewares/verify-permission';
 import { VerifyPasswordSchema } from '@DTOs/user/verify-password';
-import { makeUserVerifyPasswordUseCase } from '@use-cases/factories/user/make-user-verify-password-use-case';
-import { makeUserResetPasswordUseCase } from '@use-cases/factories/user/make-user-reset-password-use-case';
+import {
+  makeUserAuthenticateUseCase,
+  makeUserDeleteUseCase,
+  makeUserGetAll,
+  makeUserGetByIdUseCase,
+  makeUserRegisterUseCase,
+  makeUserResetPasswordUseCase,
+  makeUserUpdateUseCase,
+  makeUserVerifyEmailUseCase,
+  makeUserVerifyPasswordUseCase,
+} from '@use-cases/factories/user';
+import { UserUpdateSchema } from '@DTOs/user/update';
 
 class UserController {
   async register(req: Request, res: Response, next: NextFunction) {
@@ -114,6 +117,20 @@ class UserController {
     }
   }
 
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    try {
+      const getAllUseCase = makeUserGetAll();
+      const users = await getAllUseCase.execute();
+      res.status(200).json({
+        data: users,
+        message: 'Usuários encontrados com sucesso!',
+      });
+      return next();
+    } catch (error) {
+      return next;
+    }
+  }
+
   async authenticate(req: Request, res: Response, next: NextFunction) {
     try {
       const data = AuthenticateSchema.parse(req.body);
@@ -149,6 +166,42 @@ class UserController {
           accessToken,
         },
         message: 'Usuário autenticado com sucesso!',
+      });
+
+      return next();
+    } catch (error) {
+      return next(error);
+    }
+  }
+  async getById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+
+      const getByIdUseCase = makeUserGetByIdUseCase();
+
+      const { user } = await getByIdUseCase.execute(id);
+
+      res.status(200).json({
+        data: user,
+        message: 'Usuário encontrado com sucesso!',
+      });
+
+      return next();
+    } catch (error) {
+      return next(error);
+    }
+  }
+  async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const data = UserUpdateSchema.parse(req.body);
+
+      const updateUseCase = makeUserUpdateUseCase();
+
+      await updateUseCase.execute({ id, data });
+
+      res.status(200).json({
+        message: 'Usuário atualizado com sucesso!',
       });
 
       return next();
