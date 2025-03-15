@@ -11,6 +11,8 @@
     "migration": "cross-env DATABASE_HOST='localhost' prisma migrate dev",
     "migration:deploy": "prisma migrate deploy",
     "migration:reset": "cross-env DATABASE_HOST='localhost' prisma migrate reset --force",
+    "db:pull": "cross-env DATABASE_HOST='localhost' prisma db pull",
+    "db:push": "cross-env DATABASE_HOST='localhost' prisma db push",
     "studio": "cross-env DATABASE_HOST='localhost' prisma studio",
     "generate": "prisma generate",
     "lint": "eslint ./src --ext .ts",

@@ -1,94 +1,85 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
-
-
-enum Role {
-  ADMIN
-  STUDENT
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id                     String    @id @default(uuid())
-  email                  String    @unique
-  password               String
-  course                 String
-  emailVerified          Boolean   @default(false) @map("email_verified")
-  emailTokenExpiry       DateTime? @map("email_token_expiry")
-  emailVerificationToken String?   @map("email_verification_token")
-  resetPasswordTokenExpiry       DateTime? @map("reset_password_token_expiry")
-  resetPasswordToken String?   @map("reset_password_token")
-  createdAt              DateTime  @default(now()) @map("created_at")
-  updatedAt              DateTime  @updatedAt @map("updated_at")
-  role                   Role      @default(STUDENT)
-
-  materials              Material[]
-  reactions              Reaction[]
+  id                       String     @id @default(uuid())
+  email                    String     @unique
+  password                 String
+  course                   String
+  emailVerified            Boolean    @default(false) @map("email_verified")
+  emailTokenExpiry         DateTime?  @map("email_token_expiry")
+  emailVerificationToken   String?    @map("email_verification_token")
+  resetPasswordTokenExpiry DateTime?  @map("reset_password_token_expiry")
+  resetPasswordToken       String?    @map("reset_password_token")
+  createdAt                DateTime   @default(now()) @map("created_at")
+  updatedAt                DateTime   @updatedAt @map("updated_at")
+  role                     Role       @default(STUDENT)
+  materials                Material[]
+  reactions                Reaction[]
 
   @@map("users")
 }
 
 model Teste {
   name String
-  id   Int @id @default(autoincrement())
+  id   Int    @id @default(autoincrement())
 }
+
 model Subjects {
-  id          String    @id @default(uuid())
-  name        String
-  couse       String
-  professor   String
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  materials   Material[]
-  reactions   Reaction[]
+  id        String     @id @default(uuid())
+  name      String
+  couse     String
+  professor String
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  materials Material[]
+  reactions Reaction[]
 
   @@map("subjects")
 }
 
 model Material {
-  id         String    @id @default(uuid())
-  title       String
-  link        String
-  userId      String    @map("user_id")
-  user        User      @relation(fields: [userId], references: [id],onDelete:Cascade)
-  subject     Subjects  @relation(fields: [subjectId], references: [id],onDelete:Cascade)
-  subjectId   String    @map("subject_id")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  reactions   Reaction[]
+  id        String     @id @default(uuid())
+  title     String
+  link      String
+  userId    String     @map("user_id")
+  subjectId String     @map("subject_id")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  subject   Subjects   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reactions Reaction[]
 
   @@map("materials")
 }
 
 model Reaction {
-  id         String    @id @default(uuid())
+  id         String       @id @default(uuid())
   type       ReactionType
-  userId     String    @map("user_id")
-  user       User      @relation(fields: [userId], references: [id],onDelete:Cascade)
-  materialId String?    @map("material_id")
-  material   Material?  @relation(fields: [materialId], references: [id],onDelete:Cascade)
-  subjectId  String?    @map("subject_id")
-  subject    Subjects?  @relation(fields: [subjectId], references: [id],onDelete:Cascade)
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime  @updatedAt @map("updated_at")
+  userId     String       @map("user_id")
+  materialId String?      @map("material_id")
+  subjectId  String?      @map("subject_id")
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+  material   Material?    @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  subject    Subjects?    @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, materialId, type])
   @@unique([userId, subjectId, type])
-
   @@map("reactions")
+}
+
+enum Role {
+  ADMIN
+  STUDENT
 }
 
 enum ReactionType {
@@ -96,5 +87,3 @@ enum ReactionType {
   REPORT
   FAVORITE
 }
-
-
