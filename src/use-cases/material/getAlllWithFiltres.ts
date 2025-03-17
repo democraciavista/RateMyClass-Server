@@ -1,9 +1,8 @@
 import { Material, Prisma } from '@prisma/client';
 import { IMaterialRepository } from '@repositories/interface/material-repository';
 
-interface RegisterMaterialUseCaseResponse {
-  material: Material[];
-}
+type RegisterMaterialUseCaseResponse = Material[];
+
 interface GetAllWithFiltresMaterialUseCaseRequest {
   title?: string;
   disciplina?: string;
@@ -27,6 +26,6 @@ export class GetAllWithFiltresMaterialUseCase {
         data.ordem,
         data.ordemBy,
         );
-    return { material };
+    return  material ;
   }
 }
