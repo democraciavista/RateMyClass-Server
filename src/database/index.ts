@@ -23,10 +23,6 @@ try {
     '- Reaction model:',
     typeof prisma.reaction === 'object' ? 'Available ✅' : 'Not available ❌',
   );
-  console.log(
-    '- Teste model:',
-    typeof prisma.teste === 'object' ? 'Available ✅' : 'Not available ❌',
-  );
 } catch (error) {
   console.error('Error checking models:', error);
 }

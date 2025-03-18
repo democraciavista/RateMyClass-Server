@@ -23,14 +23,6 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
-CREATE TABLE "Teste" (
-    "name" TEXT NOT NULL,
-    "id" SERIAL NOT NULL,
-
-    CONSTRAINT "Teste_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "subjects" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,

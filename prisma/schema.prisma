@@ -27,10 +27,6 @@ model User {
   @@map("users")
 }
 
-model Teste {
-  name String
-  id   Int    @id @default(autoincrement())
-}
 
 model Subjects {
   id        String     @id @default(uuid())
