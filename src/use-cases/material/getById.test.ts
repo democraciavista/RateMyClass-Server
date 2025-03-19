@@ -19,7 +19,7 @@ describe('GetByIdMaterial Use Case', () => {
       title: 'Material 1',
       link: 'http://link1.com',
       userId: '1',
-      subjectId: '1',
+      disciplineId: '1',
       createdAt: new Date(),
       updatedAt: new Date(),
     };

@@ -19,7 +19,7 @@ describe('DeleteMaterial Use Case', () => {
       title: 'Material 1',
       link: 'link1',
       userId: '1',
-      subjectId: '1',
+      disciplineId: '1',
       createdAt: new Date(),
       updatedAt: new Date(),
     };

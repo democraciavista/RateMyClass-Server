@@ -19,7 +19,7 @@ describe('UpdateMaterial Use Case', () => {
       title: 'Old Title',
       link: 'http://old-link.com',
       userId: '1',
-      subjectId: '1',
+      disciplineId: '1',
       createdAt: new Date(),
       updatedAt: new Date(),
     };
