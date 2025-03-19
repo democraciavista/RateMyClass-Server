@@ -2,13 +2,13 @@ import { NotFoundError } from '@errors/not-found-error';
 import { Discipline } from '@prisma/client';
 import { IDisciplineRepository } from '@repositories/interface/discipline-repository';
 
-interface getByIdDisciplineUseCaseResponse {
+interface GetByIdDisciplineUseCaseResponse {
   discipline: Discipline;
 }
-export class getByIdDisciplineUseCase {
+export class GetByIdDisciplineUseCase {
   constructor(private disciplineRepository: IDisciplineRepository) {}
 
-  async execute(id: string): Promise<getByIdDisciplineUseCaseResponse> {
+  async execute(id: string): Promise<GetByIdDisciplineUseCaseResponse> {
     const discipline = await this.disciplineRepository.findById(id);
     if (!discipline) {
       throw new NotFoundError('Disciplina não encontrada');

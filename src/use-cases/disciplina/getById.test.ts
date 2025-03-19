@@ -1,16 +1,16 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { InMemoryDisciplineRepository } from '@repositories/in-memory/in-memory-discipline-repository'; // Substitua pelo caminho correto
-import { getByIdDisciplineUseCase } from './getById';
 import { NotFoundError } from '@errors/not-found-error';
 import { $Enums } from '@prisma/client';
+import { GetByIdDisciplineUseCase } from './getById';
 
 let disciplineRepository: InMemoryDisciplineRepository;
-let getByIdSut: getByIdDisciplineUseCase;
+let getByIdSut: GetByIdDisciplineUseCase;
 
 describe('GetByIdDiscipline Use Case', () => {
   beforeEach(() => {
     disciplineRepository = new InMemoryDisciplineRepository();
-    getByIdSut = new getByIdDisciplineUseCase(disciplineRepository);
+    getByIdSut = new GetByIdDisciplineUseCase(disciplineRepository);
   });
 
   it('should return a discipline when it exists', async () => {
