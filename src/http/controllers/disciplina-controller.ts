@@ -1,24 +1,38 @@
 import { Request, Response, NextFunction } from 'express';
-import { makeCreateDisciplinaUseCase } from '@use-cases/factories/disciplina/make-create-disciplina-use-case';
-import { makeGetDisciplinaByIdUseCase } from '@use-cases/factories/disciplina/make-get-disciplina-by-id-use-case';
-import { makeGetAllDisciplinasUseCase } from '@use-cases/factories/disciplina/make-get-all-disciplinas-use-case';
-import { makeUpdateDisciplinaUseCase } from '@use-cases/factories/disciplina/make-update-disciplina-use-case';
-import { makeDeleteDisciplinaUseCase } from '@use-cases/factories/disciplina/make-delete-disciplina-use-case';
+import { DisciplineRegisterDTO } from '@DTOs/discipline/register';
+import {
+  makeGetDisciplineByIdUseCase,
+  makeRegisterDisciplineUseCase,
+  makeUpdateDisciplineUseCase,
+  makeDeleteDisciplinaUseCase,
+  makeGetAllByFiltresDisciplineUseCase,
+  makeGetAllDisciplineUseCase,
+  makeGetAllFavoriteByFiltresUseCase,
+} from '@use-cases/factories/disciplina';
+import { DisciplineUpdateDTO } from '@DTOs/discipline/update';
+import { DisciplineGetAllWithFiltrerDTO } from '@DTOs/discipline/getAllWithFiltrer';
+import { DisciplineGetAllFavoriteWithFiltrerDTO } from '@DTOs/discipline/getAllFavoriteWithFiltrer';
 
 class DisciplinaController {
-  async create(req: Request, res: Response, next: NextFunction) {
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const { codigo, nome, professor, centro, periodo, tipo } = req.body;
-      const createDisciplinaUseCase = makeCreateDisciplinaUseCase();
-      const disciplina = await createDisciplinaUseCase.execute({
-        codigo,
-        nome,
+      const { center, code, course, hours, name, professor, type, period } =
+        DisciplineRegisterDTO.parse(req.body);
+      const registerDisciplinaUseCase = makeRegisterDisciplineUseCase();
+      const disciplina = await registerDisciplinaUseCase.execute({
+        center,
+        code,
+        course,
+        hours,
+        name,
         professor,
-        centro,
-        periodo,
-        tipo,
+        type,
+        period,
       });
-      res.status(201).json(disciplina);
+      res.status(201).json({
+        message: 'Disciplina criada com sucesso',
+        disciplina,
+      });
     } catch (error) {
       next(error);
     }
@@ -27,9 +41,12 @@ class DisciplinaController {
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const getDisciplinaByIdUseCase = makeGetDisciplinaByIdUseCase();
-      const disciplina = await getDisciplinaByIdUseCase.execute({ id });
-      res.status(200).json(disciplina);
+      const getDisciplinaByIdUseCase = makeGetDisciplineByIdUseCase();
+      const disciplina = await getDisciplinaByIdUseCase.execute(id);
+      res.status(200).json({
+        message: 'Disciplina encontrada',
+        disciplina,
+      });
     } catch (error) {
       next(error);
     }
@@ -37,7 +54,7 @@ class DisciplinaController {
 
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const getAllDisciplinasUseCase = makeGetAllDisciplinasUseCase();
+      const getAllDisciplinasUseCase = makeGetAllDisciplineUseCase();
       const disciplinas = await getAllDisciplinasUseCase.execute();
       res.status(200).json(disciplinas);
     } catch (error) {
@@ -48,18 +65,14 @@ class DisciplinaController {
   async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const { codigo, nome, professor, centro, periodo, tipo } = req.body;
-      const updateDisciplinaUseCase = makeUpdateDisciplinaUseCase();
-      const disciplina = await updateDisciplinaUseCase.execute({
-        id,
-        codigo,
-        nome,
-        professor,
-        centro,
-        periodo,
-        tipo,
+      const data = DisciplineUpdateDTO.parse(req.body);
+      const updateDisciplinaUseCase = makeUpdateDisciplineUseCase();
+      const disciplina = await updateDisciplinaUseCase.execute(id, data);
+      res.status(200).json({
+        message: 'Disciplina atualizada com sucesso',
+        disciplina,
       });
-      res.status(200).json(disciplina);
+      next();
     } catch (error) {
       next(error);
     }
@@ -69,8 +82,57 @@ class DisciplinaController {
     try {
       const { id } = req.params;
       const deleteDisciplinaUseCase = makeDeleteDisciplinaUseCase();
-      await deleteDisciplinaUseCase.execute({ id });
+      await deleteDisciplinaUseCase.execute(id);
       res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getAllByFiltres(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = DisciplineGetAllWithFiltrerDTO.parse(req.query);
+      const getAllByFiltresDisciplinaUseCase =
+        makeGetAllByFiltresDisciplineUseCase();
+      const disciplinas = await getAllByFiltresDisciplinaUseCase.execute({
+        center: data.center,
+        course: data.course,
+        code: data.code,
+        name: data.name,
+        professor: data.professor,
+        type: data.type,
+        period: data.period,
+        ordem: data.ordem,
+        ordemBy: data.ordemBy,
+      });
+      res.status(200).json(disciplinas);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getAllFavoriteByFiltres(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const data = DisciplineGetAllFavoriteWithFiltrerDTO.parse(req.query);
+      const getAllByFiltresDisciplinaUseCase =
+        makeGetAllFavoriteByFiltresUseCase();
+      const disciplinas = await getAllByFiltresDisciplinaUseCase.execute({
+        center: data.center,
+        course: data.course,
+        code: data.code,
+        name: data.name,
+        professor: data.professor,
+        type: data.type,
+        period: data.period,
+        ordem: data.ordem,
+        ordemBy: data.ordemBy,
+        userId: data.userId,
+      });
+      res.status(200).json(disciplinas);
+      next();
     } catch (error) {
       next(error);
     }
