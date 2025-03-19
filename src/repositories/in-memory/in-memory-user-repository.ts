@@ -1,6 +1,6 @@
+import { NotFoundError } from '@errors/not-found-error';
 import { Prisma, User } from '@prisma/client';
 import { IUserRepository } from '@repositories/interface/user-repository';
-import { NotFoundError } from 'errors/not-found-error';
 import { randomUUID } from 'node:crypto';
 
 export class InMemoryUserRepository implements IUserRepository {
