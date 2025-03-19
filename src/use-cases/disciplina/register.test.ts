@@ -24,7 +24,7 @@ describe('RegisterDiscipline Use Case', () => {
       type: $Enums.CourseType.MANDATORY,
     };
 
-    const discipline = await sut.execute(disciplineData);
+    const {discipline} = await sut.execute(disciplineData);
 
     expect(discipline).toBeDefined();
     expect(discipline.code).toEqual(disciplineData.code);

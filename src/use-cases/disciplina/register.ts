@@ -1,4 +1,4 @@
-import { $Enums } from '@prisma/client';
+import { $Enums, Discipline } from '@prisma/client';
 import { IDisciplineRepository } from '@repositories/interface/discipline-repository';
 
 interface RegisterDisciplineUseCaseRequest {
@@ -11,10 +11,18 @@ interface RegisterDisciplineUseCaseRequest {
   course: string;
   type: $Enums.CourseType;
 }
+
+interface RegisterDisciplineUseCaseResponse {
+  discipline: Discipline;
+}
 export class RegisterDisciplineUseCase {
   constructor(private disciplinaRepository: IDisciplineRepository) {}
 
-  async execute(data: RegisterDisciplineUseCaseRequest) {
-    return this.disciplinaRepository.create(data);
+  async execute(
+    data: RegisterDisciplineUseCaseRequest,
+  ): Promise<RegisterDisciplineUseCaseResponse> {
+    const discipline = await this.disciplinaRepository.create(data);
+
+    return { discipline };
   }
 }
