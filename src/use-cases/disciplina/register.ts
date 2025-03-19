@@ -6,7 +6,7 @@ interface RegisterDisciplineUseCaseRequest {
   name: string;
   professor: string;
   center: string;
-  period: number;
+  period?: number;
   hours: number;
   course: string;
   type: $Enums.CourseType;
