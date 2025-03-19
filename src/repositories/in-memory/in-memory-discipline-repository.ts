@@ -2,7 +2,7 @@ import { $Enums, Discipline, Prisma, Reaction } from '@prisma/client';
 import { IDisciplineRepository } from '@repositories/interface/discipline-repository';
 import { randomUUID } from 'node:crypto';
 
-export class InMemoryDisciplineRepositoru implements IDisciplineRepository {
+export class InMemoryDisciplineRepository implements IDisciplineRepository {
   public items: (Discipline & { reactions?: Reaction[] })[] = [];
   async create(data: Prisma.DisciplineUncheckedCreateInput) {
     const discipline: Discipline = {
