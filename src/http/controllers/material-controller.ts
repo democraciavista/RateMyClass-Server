@@ -1,6 +1,3 @@
-import { MaterialGetWithFilterSchema } from '@DTOs/material/getAllWithFilter';
-import { MaterialRegisterSchema } from '@DTOs/material/register';
-import { MaterialUpdateSchema } from '@DTOs/material/update';
 import {
   makeDeleteMaterialUseCase,
   makeGetAllWithFiltresMaterialUseCase,
@@ -9,6 +6,9 @@ import {
   makeRegisterMaterialUseCase,
   makeUpdateMaterialUseCase,
 } from '@use-cases/factories/material';
+import { MaterialGetWithFilterSchema } from '@DTOs/material/getAllWithFilter';
+import { MaterialRegisterSchema } from '@DTOs/material/register';
+import { MaterialUpdateSchema } from '@DTOs/material/update';
 import { NextFunction, Request, Response } from 'express';
 
 class MaterialControler {

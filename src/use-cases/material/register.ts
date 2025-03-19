@@ -1,7 +1,7 @@
 import { NotFoundError } from '@errors/not-found-error';
 import { Material } from '@prisma/client';
 import { IMaterialRepository } from '@repositories/interface/material-repository';
-import { ISubjectRepository } from '@repositories/interface/subjects-repository';
+import { ISubjectRepository } from '@repositories/interface/discipline-repository';
 import { IUserRepository } from '@repositories/interface/user-repository';
 
 interface RegisterMaterialUseCaseRequest {

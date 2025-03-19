@@ -1,9 +1,9 @@
 import { User } from '@prisma/client';
-import { compare } from 'bcryptjs';
 import { IUserRepository } from '@repositories/interface/user-repository';
 import { InvalidCredentialsError } from '@errors/invalid-credentials-error';
 import { NotFoundError } from '@errors/not-found-error';
 import { EmailVerificationSender } from '@services/email-verification-sender';
+import { compare } from 'bcryptjs';
 
 interface AuthenticateUseCaseRequest {
   email: string;

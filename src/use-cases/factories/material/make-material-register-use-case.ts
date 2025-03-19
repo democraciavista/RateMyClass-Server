@@ -1,5 +1,5 @@
 import { PrismaMaterialRepository } from '@repositories/prisma/prisma-material-repository';
-import { PrismaSubjectsRepository } from '@repositories/prisma/prisma-subject-repository';
+import { PrismaSubjectsRepository } from '@repositories/prisma/prisma-discipline-repository';
 import { PrismaUserRepository } from '@repositories/prisma/prisma-user-repository';
 import { RegisterMaterialUseCase } from '@use-cases/material/register';
 

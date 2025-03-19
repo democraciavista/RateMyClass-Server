@@ -1,26 +1,31 @@
 import { NotFoundError } from '@errors/not-found-error';
-import { Material, Prisma, Subjects, User } from '@prisma/client';
+import { Material, Prisma, Discipline, User } from '@prisma/client';
 import { IMaterialRepository } from '@repositories/interface/material-repository';
 import { randomUUID } from 'node:crypto';
 
 export class InMemoryMaterialRepository implements IMaterialRepository {
-  public items: (Material & { user: User; subject: Subjects })[] = [];
+  public items: (Material & { user: User; discipline: Discipline })[] = [];
   async create(data: Prisma.MaterialUncheckedCreateInput) {
-    const material: Material & { user: User; subject: Subjects } = {
+    const material: Material & { user: User; discipline: Discipline } = {
       id: randomUUID(),
       title: data.title,
       link: data.link,
       createdAt: new Date(),
       updatedAt: new Date(),
-      subjectId: data.subjectId || randomUUID(),
+      disciplineId: data.disciplineId || randomUUID(),
       userId: data.userId || randomUUID(),
-      subject: {
-        id: data.subjectId || randomUUID(),
+      discipline: {
+        id: data.disciplineId || randomUUID(),
         name: 'Matemática',
         createdAt: new Date(),
         updatedAt: new Date(),
-        couse: 'Sistemas de Informação',
+        course: 'Sistemas de Informação',
         professor: 'João',
+        center: 'CTG',
+        code: 'MAT101',
+        period: 1,
+        hours: 60,
+        type: 'ELECTIVE_FREE',
       },
       user: {
         id: data.userId || randomUUID(),
@@ -44,7 +49,7 @@ export class InMemoryMaterialRepository implements IMaterialRepository {
   async findById(id: string) {
     const material = this.items.find((item) => item.id === id);
     if (!material) {
-      return null;
+      throw new NotFoundError('Material not found');
     }
     return material;
   }
@@ -54,25 +59,20 @@ export class InMemoryMaterialRepository implements IMaterialRepository {
   }
   async delete(id: string) {
     const materialIndex = this.items.findIndex((item) => item.id === id);
-    if (materialIndex === -1) {
-      throw new NotFoundError('Material não encontrado');
-    }
     const material = this.items[materialIndex];
     this.items.splice(materialIndex, 1);
     return material;
   }
   async update(id: string, data: Prisma.MaterialUpdateInput) {
     const materialIndex = this.items.findIndex((item) => item.id === id);
-    if (materialIndex === -1) {
-      throw new NotFoundError('Material não encontrado');
-    }
     const material = this.items[materialIndex];
     this.items[materialIndex] = {
       ...material,
       ...(data as Material),
       updatedAt: new Date(),
     };
-    return this.items[materialIndex];
+    const { user, discipline, ...updatedMaterial } = this.items[materialIndex];
+    return updatedMaterial;
   }
   async findAll() {
     return this.items;
@@ -91,31 +91,40 @@ export class InMemoryMaterialRepository implements IMaterialRepository {
     }
     if (disciplina) {
       materials = materials.filter(
-        (material) => material.subjectId === disciplina,
+        (material) => material.disciplineId === disciplina,
       );
     }
     if (curso) {
       materials = materials.filter(
-        (material) => material.subject.couse === curso,
+        (material) => material.discipline.course === curso,
       );
     }
     if (professor) {
       materials = materials.filter(
-        (material) => material.subject.professor === professor,
+        (material) => material.discipline.professor === professor,
       );
     }
     if (ordem && ordemBy) {
       materials = materials.sort((a, b) => {
         if (ordem === 'asc') {
           return a[
-            ordemBy as keyof (Material & { user: User; subject: Subjects })
-          ] > b[ordemBy as keyof (Material & { user: User; subject: Subjects })]
+            ordemBy as keyof (Material & { user: User; discipline: Discipline })
+          ] >
+            b[
+              ordemBy as keyof (Material & {
+                user: User;
+                discipline: Discipline;
+              })
+            ]
             ? 1
             : -1;
         }
         return a[
-          ordemBy as keyof (Material & { user: User; subject: Subjects })
-        ] < b[ordemBy as keyof (Material & { user: User; subject: Subjects })]
+          ordemBy as keyof (Material & { user: User; discipline: Discipline })
+        ] <
+          b[
+            ordemBy as keyof (Material & { user: User; discipline: Discipline })
+          ]
           ? 1
           : -1;
       });
@@ -137,31 +146,40 @@ export class InMemoryMaterialRepository implements IMaterialRepository {
     }
     if (disciplina) {
       materials = materials.filter(
-        (material) => material.subjectId === disciplina,
+        (material) => material.disciplineId === disciplina,
       );
     }
     if (curso) {
       materials = materials.filter(
-        (material) => material.subject.couse === curso,
+        (material) => material.discipline.course === curso,
       );
     }
     if (professor) {
       materials = materials.filter(
-        (material) => material.subject.professor === professor,
+        (material) => material.discipline.professor === professor,
       );
     }
     if (ordem && ordemBy) {
       materials = materials.sort((a, b) => {
         if (ordem === 'asc') {
           return a[
-            ordemBy as keyof (Material & { user: User; subject: Subjects })
-          ] > b[ordemBy as keyof (Material & { user: User; subject: Subjects })]
+            ordemBy as keyof (Material & { user: User; discipline: Discipline })
+          ] >
+            b[
+              ordemBy as keyof (Material & {
+                user: User;
+                discipline: Discipline;
+              })
+            ]
             ? 1
             : -1;
         }
         return a[
-          ordemBy as keyof (Material & { user: User; subject: Subjects })
-        ] < b[ordemBy as keyof (Material & { user: User; subject: Subjects })]
+          ordemBy as keyof (Material & { user: User; discipline: Discipline })
+        ] <
+          b[
+            ordemBy as keyof (Material & { user: User; discipline: Discipline })
+          ]
           ? 1
           : -1;
       });

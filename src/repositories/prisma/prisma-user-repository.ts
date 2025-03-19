@@ -1,6 +1,6 @@
+import prisma from '@database/index';
 import { Prisma, User } from '@prisma/client';
 
-import prisma from '@database';
 
 import { IUserRepository } from '@repositories/interface/user-repository';
 

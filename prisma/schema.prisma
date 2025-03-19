@@ -23,22 +23,17 @@ model User {
   role                     Role       @default(STUDENT)
   materials                Material[]
   reactions                Reaction[]
+  reviews                  Review[]
 
   @@map("users")
 }
 
 
-model Subjects {
-  id        String     @id @default(uuid())
-  name      String
-  couse     String
-  professor String
-  createdAt DateTime   @default(now()) @map("created_at")
-  updatedAt DateTime   @updatedAt @map("updated_at")
-  materials Material[]
-  reactions Reaction[]
 
-  @@map("subjects")
+enum CourseType {
+  MANDATORY    
+  ELECTIVE_FREE  
+  ELECTIVE_PROFILE 
 }
 
 model Material {
@@ -46,10 +41,10 @@ model Material {
   title     String
   link      String
   userId    String     @map("user_id")
-  subjectId String     @map("subject_id")
+  disciplineId String     @map("discipline_id")
   createdAt DateTime   @default(now()) @map("created_at")
   updatedAt DateTime   @updatedAt @map("updated_at")
-  subject   Subjects   @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  discipline   Discipline    @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   reactions Reaction[]
 
@@ -61,15 +56,15 @@ model Reaction {
   type       ReactionType
   userId     String       @map("user_id")
   materialId String?      @map("material_id")
-  subjectId  String?      @map("subject_id")
+  disciplineId  String?      @map("discipline_id")
   createdAt  DateTime     @default(now()) @map("created_at")
   updatedAt  DateTime     @updatedAt @map("updated_at")
   material   Material?    @relation(fields: [materialId], references: [id], onDelete: Cascade)
-  subject    Subjects?    @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  discipline    Discipline?     @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
   user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, materialId, type])
-  @@unique([userId, subjectId, type])
+  @@unique([userId, disciplineId, type])
   @@map("reactions")
 }
 
@@ -82,4 +77,66 @@ enum ReactionType {
   LIKE
   REPORT
   FAVORITE
+}
+
+model Discipline {
+  id          String       @id @default(uuid())
+  code        String       @unique
+  name        String
+  professor   String
+  course    String
+  center      String
+  period      Int?      
+  type        CourseType
+  hours       Int        @map("hours")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  reviews     Review[]  
+  materials   Material[]   
+  statistics  Statistic[] 
+  reactions Reaction[]
+
+
+  @@map("disciplines")
+}
+
+model Review {
+  id                     String    @id @default(uuid())
+  disciplineId           String    @map("discipline_id")
+  userId                 String    @map("user_id")
+  passedFirstTry         Boolean   @map("passed_first_try")
+  finalGrade             Float     @map("final_grade")
+  professorTeachingScore Float     @map("professor_teaching_score")
+  periodPaid             String    @map("period_paid") 
+  droppedOut             Boolean   @map("dropped_out")
+  difficultyLevel        Float       @map("difficulty_level")
+  disciplineScore        Float     @map("discipline_score")
+  comment                String
+  recommendation         String
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  discipline Discipline @relation(fields: [disciplineId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+
+  @@map("reviews")
+}
+
+model Statistic {
+  id                     String    @id @default(uuid())
+  disciplineId           String    @map("discipline_id")
+  totalReviews           Int       @map("total_reviews")
+  averageGrades          Float     @map("average_grades")
+  averageTeachingScore   Float     @map("average_teaching_score")
+  averageDifficulty      Float     @map("average_difficulty")
+  dropoutRate            Float     @map("dropout_rate") 
+  disciplineScore        Float     @map("discipline_score") 
+  approvalRate           Float     @map("approval_rate") 
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  discipline Discipline @relation(fields: [disciplineId], references: [id])
+
+  @@map("statistics")
 }
