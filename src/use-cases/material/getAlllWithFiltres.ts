@@ -18,14 +18,18 @@ export class GetAllWithFiltresMaterialUseCase {
   async execute(
     data: GetAllWithFiltresMaterialUseCaseRequest,
   ): Promise<RegisterMaterialUseCaseResponse> {
-    const material = await this.materialRepository.findByFiltres(
+    try {
+      const material = await this.materialRepository.findByFiltres(
         data.title,
         data.disciplina,
         data.curso,
         data.professor,
         data.ordem,
         data.ordemBy,
-        );
-    return  material ;
+      );
+      return material;
+    } catch (error) {
+      throw error;
+    }
   }
 }

@@ -57,10 +57,12 @@ model Reaction {
   userId     String       @map("user_id")
   materialId String?      @map("material_id")
   disciplineId  String?      @map("discipline_id")
+  reviewId   String?      @map("review_id")
   createdAt  DateTime     @default(now()) @map("created_at")
   updatedAt  DateTime     @updatedAt @map("updated_at")
   material   Material?    @relation(fields: [materialId], references: [id], onDelete: Cascade)
   discipline    Discipline?     @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+  review     Review?     @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, materialId, type])
@@ -73,6 +75,7 @@ enum Role {
   STUDENT
 }
 
+
 enum ReactionType {
   LIKE
   REPORT
@@ -81,7 +84,7 @@ enum ReactionType {
 
 model Discipline {
   id          String       @id @default(uuid())
-  code        String       @unique
+  code        String       
   name        String
   professor   String
   course    String
@@ -117,8 +120,10 @@ model Review {
   createdAt              DateTime  @default(now()) @map("created_at")
   updatedAt              DateTime  @updatedAt @map("updated_at")
 
-  discipline Discipline @relation(fields: [disciplineId], references: [id])
-  user       User       @relation(fields: [userId], references: [id])
+  discipline Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  reactions Reaction[]
 
   @@map("reviews")
 }
@@ -136,7 +141,7 @@ model Statistic {
   createdAt              DateTime  @default(now()) @map("created_at")
   updatedAt              DateTime  @updatedAt @map("updated_at")
 
-  discipline Discipline @relation(fields: [disciplineId], references: [id])
+  discipline Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
 
   @@map("statistics")
 }

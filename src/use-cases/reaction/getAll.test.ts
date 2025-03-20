@@ -22,6 +22,7 @@ describe('ListAllReactions Use Case', () => {
         type: $Enums.ReactionType.LIKE,
         createdAt: new Date(),
         updatedAt: new Date(),
+        reviewId: null,
       },
       {
         id: 'reaction-002',
@@ -31,6 +32,7 @@ describe('ListAllReactions Use Case', () => {
         type: $Enums.ReactionType.FAVORITE,
         createdAt: new Date(),
         updatedAt: new Date(),
+        reviewId: null,
       },
     ];
 

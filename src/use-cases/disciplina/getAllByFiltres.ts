@@ -30,17 +30,21 @@ export class GetAllByFiltresDisciplineUseCase {
     professor,
     type,
   }: GetAllByFiltresDisciplineUseCaseRequest): Promise<GetAllByFiltresDisciplineUseCaseResponse> {
-    const disciplines = await this.disciplineRepository.findByFiltres(
-      name,
-      code,
-      course,
-      center,
-      period,
-      professor,
-      type,
-      ordem,
-      ordemBy,
-    );
-    return { disciplines };
+    try {
+      const disciplines = await this.disciplineRepository.findByFiltres(
+        name,
+        code,
+        course,
+        center,
+        period,
+        professor,
+        type,
+        ordem,
+        ordemBy,
+      );
+      return { disciplines };
+    } catch (error) {
+      throw error;
+    }
   }
 }

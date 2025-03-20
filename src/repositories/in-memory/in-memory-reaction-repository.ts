@@ -15,6 +15,7 @@ export class InMemoryReactionRepository implements IReactionRepository {
       createdAt: new Date(),
       updatedAt: new Date(),
       disciplineId: data.disciplineId || randomUUID(),
+      reviewId: data.reviewId || randomUUID(),
     };
     this.items.push(newReaction);
     return newReaction;

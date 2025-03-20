@@ -15,35 +15,42 @@ export class ResetPasswordUseCase {
   constructor(
     private readonly userRepository: IUserRepository,
     private emailVerificationSender: EmailVerificationSender,
-    private generateToken: () => Promise<{ token: string; hashedToken: string }>,
+    private generateToken: () => Promise<{
+      token: string;
+      hashedToken: string;
+    }>,
   ) {}
   async execute({
-    email
+    email,
   }: ResetPasswordUseCaseRequest): Promise<ResetPasswordUseCaseResponse> {
-    const user = await this.userRepository.findByEmail(email);
-    if (!user) {
-      throw new NotFoundError('Usuário não encontrado');
+    try {
+      const user = await this.userRepository.findByEmail(email);
+      if (!user) {
+        throw new NotFoundError('Usuário não encontrado');
+      }
+      if (!user.emailVerified) {
+        throw new NotFoundError('Email não verificado');
+      }
+      const { token, hashedToken } = await this.generateToken();
+      const now = new Date();
+
+      const emailVerifyTokenExpiry = now.setHours(now.getHours() + 1);
+
+      this.emailVerificationSender.sendVerificationEmail(
+        token,
+        email,
+        'passwordReset',
+      );
+
+      const userUpdated = await this.userRepository.save(user.id, {
+        resetPasswordToken: hashedToken,
+        resetPasswordTokenExpiry: new Date(emailVerifyTokenExpiry),
+      });
+      return {
+        user: userUpdated,
+      };
+    } catch (error) {
+      throw error;
     }
-    if (!user.emailVerified) {
-      throw new NotFoundError('Email não verificado');
-    }
-    const { token, hashedToken } = await this.generateToken();
-    const now = new Date();
-
-    const emailVerifyTokenExpiry = now.setHours(now.getHours() + 1);
-
-    this.emailVerificationSender.sendVerificationEmail(
-      token,
-      email,
-      'passwordReset',
-    );
-
-    const userUpdated = await this.userRepository.save(user.id, {
-      resetPasswordToken: hashedToken,
-      resetPasswordTokenExpiry: new Date(emailVerifyTokenExpiry),
-    });
-    return {
-      user: userUpdated,
-    };
   }
 }

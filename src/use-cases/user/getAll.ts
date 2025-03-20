@@ -8,8 +8,12 @@ export class GetAllUserUseCase {
   constructor(private userRepository: IUserRepository) {}
 
   async execute(): Promise<GetAllUserUseCaseResponse> {
-    const users = await this.userRepository.findAll();
+    try {
+      const users = await this.userRepository.findAll();
 
-    return { users };
+      return { users };
+    } catch (error) {
+      throw error;
+    }
   }
 }

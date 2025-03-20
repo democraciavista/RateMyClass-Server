@@ -10,12 +10,16 @@ export class DeleteReactionUseCase {
   constructor(private ReactionRepository: IReactionRepository) {}
 
   async execute(id: string): Promise<RegisterReactionUseCaseResponse> {
-    const ReactionExist = await this.ReactionRepository.findById(id);
-    if (!ReactionExist) {
-      throw new NotFoundError('Reação não encontrada');
-    }
-    const Reaction = await this.ReactionRepository.delete(id);
+    try {
+      const ReactionExist = await this.ReactionRepository.findById(id);
+      if (!ReactionExist) {
+        throw new NotFoundError('Reação não encontrada');
+      }
+      const Reaction = await this.ReactionRepository.delete(id);
 
-    return { Reaction };
+      return { Reaction };
+    } catch (error) {
+      throw error;
+    }
   }
 }

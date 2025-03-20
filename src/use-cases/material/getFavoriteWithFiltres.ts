@@ -20,7 +20,8 @@ export class GetFavoriteWithFiltresMaterialUseCase {
   async execute(
     data: GetFavoriteWithFiltresMaterialUseCaseRequest,
   ): Promise<RegisterMaterialUseCaseResponse> {
-    const material = await this.materialRepository.findFavoriteByFiltres(
+    try {
+      const material = await this.materialRepository.findFavoriteByFiltres(
         data.userId,
         data.title,
         data.disciplina,
@@ -28,7 +29,10 @@ export class GetFavoriteWithFiltresMaterialUseCase {
         data.professor,
         data.ordem,
         data.ordemBy,
-        );
-    return { material };
+      );
+      return { material };
+    } catch (error) {
+      throw error;
+    }
   }
 }

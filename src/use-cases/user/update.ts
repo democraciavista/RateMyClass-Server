@@ -13,11 +13,15 @@ interface UpdateUseCaseResponse {
 export class UpdateUseCase {
   constructor(private userRepository: IUserRepository) {}
   async execute(data: UpdateUseCaseRequest): Promise<UpdateUseCaseResponse> {
-    const userAlreadyExists = await this.userRepository.findById(data.id);
-    if (!userAlreadyExists) {
-      throw new NotFoundError('Usuário não encontrado');
+    try {
+      const userAlreadyExists = await this.userRepository.findById(data.id);
+      if (!userAlreadyExists) {
+        throw new NotFoundError('Usuário não encontrado');
+      }
+      const user = await this.userRepository.save(data.id, data.data);
+      return { user };
+    } catch (error) {
+      throw error;
     }
-    const user = await this.userRepository.save(data.id, data.data);
-    return { user };
   }
 }

@@ -32,18 +32,22 @@ export class GetAllFavoriteByFiltresDisciplineUseCase {
     type,
     userId,
   }: GetAllFavoriteByFiltresDisciplineUseCaseRequest): Promise<GetAllFavoriteByFiltresDisciplineUseCaseResponse> {
-    const disciplines = await this.disciplineRepository.findFavoriteByFiltres(
-      userId,
-      name,
-      code,
-      course,
-      center,
-      period,
-      professor,
-      type,
-      ordem,
-      ordemBy,
-    );
-    return { disciplines };
+    try {
+      const disciplines = await this.disciplineRepository.findFavoriteByFiltres(
+        userId,
+        name,
+        code,
+        course,
+        center,
+        period,
+        professor,
+        type,
+        ordem,
+        ordemBy,
+      );
+      return { disciplines };
+    } catch (error) {
+      throw error;
+    }
   }
 }

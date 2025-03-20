@@ -24,13 +24,17 @@ export class UpdateDisciplineUserCase {
     id: string,
     data: UpdateDisciplineUseCaseRequest,
   ): Promise<UpdateDisciplineUseCaseResponse> {
-    const disciplineAlreadyExists = await this.disciplineRepository.findById(
-      id,
-    );
-    if (!disciplineAlreadyExists) {
-      throw new NotFoundError('Disciplina não encontrada');
+    try {
+      const disciplineAlreadyExists = await this.disciplineRepository.findById(
+        id,
+      );
+      if (!disciplineAlreadyExists) {
+        throw new NotFoundError('Disciplina não encontrada');
+      }
+      const discipline = await this.disciplineRepository.update(id, data);
+      return { discipline };
+    } catch (error) {
+      throw error;
     }
-    const discipline = await this.disciplineRepository.update(id, data);
-    return { discipline };
   }
 }

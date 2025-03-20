@@ -28,30 +28,36 @@ export class RegisterUseCase {
   async execute(
     data: RegisterUseCaseRequest,
   ): Promise<RegisterUseCaseResponse> {
-    const hashedPassword = await hash(data.password, 10);
+    try {
+      const hashedPassword = await hash(data.password, 10);
 
-    const userAlreadyExists = await this.userRepository.findByEmail(data.email);
+      const userAlreadyExists = await this.userRepository.findByEmail(
+        data.email,
+      );
 
-    if (userAlreadyExists) {
-      throw new AlreadyExistsError('Email já cadastrado');
+      if (userAlreadyExists) {
+        throw new AlreadyExistsError('Email já cadastrado');
+      }
+
+      const { token, hashedToken } = await this.generateToken();
+
+      const now = new Date();
+      const emailVerifyTokenExpiry = now.setHours(now.getHours() + 1);
+
+      this.EmailVerificationSender.sendVerificationEmail(token, data.email);
+
+      const user = await this.userRepository.create({
+        email: data.email,
+        password: hashedPassword,
+        role: data.role,
+        course: data.course,
+        emailVerificationToken: hashedToken,
+        emailTokenExpiry: new Date(emailVerifyTokenExpiry),
+      });
+
+      return { user };
+    } catch (error) {
+      throw error;
     }
-
-    const { token, hashedToken } = await this.generateToken();
-
-    const now = new Date();
-    const emailVerifyTokenExpiry = now.setHours(now.getHours() + 1);
-
-    this.EmailVerificationSender.sendVerificationEmail(token, data.email);
-
-    const user = await this.userRepository.create({
-      email: data.email,
-      password: hashedPassword,
-      role: data.role,
-      course: data.course,
-      emailVerificationToken: hashedToken,
-      emailTokenExpiry: new Date(emailVerifyTokenExpiry),
-    });
-
-    return { user };
   }
 }

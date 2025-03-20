@@ -22,37 +22,44 @@ export class VerifyEmailUseCase {
   async execute(
     data: VerifyEmailUseCaseRequest,
   ): Promise<VerifyEmailUseCaseResponse> {
-    const user = await this.userRepository.findByEmail(data.email);
+    try {
+      const user = await this.userRepository.findByEmail(data.email);
 
-    if (!user) {
-      throw new NotFoundError('Usuário não encontrado');
+      if (!user) {
+        throw new NotFoundError('Usuário não encontrado');
+      }
+      if (user.emailVerified) {
+        throw new AlreadyExistsError('Email já verificado');
+      }
+
+      if (!user.emailVerificationToken || !user.emailTokenExpiry) {
+        throw new InvalidTokenError();
+      }
+
+      if (user.emailTokenExpiry < new Date()) {
+        throw new InvalidTokenError();
+      }
+
+      const isTokenValid = await compare(
+        data.token,
+        user.emailVerificationToken,
+      );
+
+      if (!isTokenValid) {
+        throw new InvalidTokenError();
+      }
+
+      const userUpdated = await this.userRepository.save(user.id, {
+        emailVerified: true,
+        emailVerificationToken: null,
+        emailTokenExpiry: null,
+      });
+
+      return {
+        user: userUpdated,
+      };
+    } catch (error) {
+      throw error;
     }
-    if (user.emailVerified) {
-      throw new AlreadyExistsError('Email já verificado');
-    }
-
-    if (!user.emailVerificationToken || !user.emailTokenExpiry) {
-      throw new InvalidTokenError();
-    }
-
-    if (user.emailTokenExpiry < new Date()) {
-      throw new InvalidTokenError();
-    }
-
-    const isTokenValid = await compare(data.token, user.emailVerificationToken);
-
-    if (!isTokenValid) {
-      throw new InvalidTokenError();
-    }
-
-    const userUpdated = await this.userRepository.save(user.id, {
-      emailVerified: true,
-      emailVerificationToken: null,
-      emailTokenExpiry: null,
-    });
-
-    return {
-      user: userUpdated,
-    };
   }
 }

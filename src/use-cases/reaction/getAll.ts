@@ -9,7 +9,11 @@ export class GetAllReactionUseCase {
   constructor(private ReactionRepository: IReactionRepository) {}
 
   async execute(): Promise<RegisterReactionUseCaseResponse> {
-    const Reaction = await this.ReactionRepository.findAll();
-    return { Reaction };
+    try {
+      const Reaction = await this.ReactionRepository.findAll();
+      return { Reaction };
+    } catch (error) {
+      throw error;
+    }
   }
 }

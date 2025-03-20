@@ -21,8 +21,12 @@ export class RegisterDisciplineUseCase {
   async execute(
     data: RegisterDisciplineUseCaseRequest,
   ): Promise<RegisterDisciplineUseCaseResponse> {
+    try {
     const discipline = await this.disciplinaRepository.create(data);
 
     return { discipline };
+  }catch (error) {
+      throw error;
+    }
   }
 }

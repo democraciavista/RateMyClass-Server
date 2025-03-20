@@ -9,13 +9,17 @@ interface DeleteDisciplineUseCaseResponse {
 export class DeleteDisciplineUseCase {
   constructor(private disciplineRepository: IDisciplineRepository) {}
   async execute(id: string): Promise<DeleteDisciplineUseCaseResponse> {
-    const disciplineAlreadyExists = await this.disciplineRepository.findById(
-      id,
-    );
-    if (!disciplineAlreadyExists) {
-      throw new NotFoundError('Disciplina não encontrada');
+    try {
+      const disciplineAlreadyExists = await this.disciplineRepository.findById(
+        id,
+      );
+      if (!disciplineAlreadyExists) {
+        throw new NotFoundError('Disciplina não encontrada');
+      }
+      const discipline = await this.disciplineRepository.delete(id);
+      return { discipline };
+    } catch (error) {
+      throw error;
     }
-    const discipline = await this.disciplineRepository.delete(id);
-    return { discipline };
   }
 }

@@ -28,35 +28,39 @@ export class AuthenticateUseCase {
     email,
     password,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    const user = await this.userRepository.findByEmail(email);
+    try {
+      const user = await this.userRepository.findByEmail(email);
 
-    if (!user) {
-      throw new InvalidCredentialsError();
+      if (!user) {
+        throw new InvalidCredentialsError();
+      }
+
+      if (!user.emailVerified) {
+        const { token, hashedToken } = await this.generateToken();
+        const now = new Date();
+        const emailVerifyTokenExpiry = now.setHours(now.getHours() + 1);
+
+        this.emailVerificationSender.sendVerificationEmail(token, email);
+        await this.userRepository.save(user.id, {
+          emailVerificationToken: hashedToken,
+          emailTokenExpiry: new Date(emailVerifyTokenExpiry),
+        });
+        throw new NotFoundError(
+          'Email não verificado, verifique seu email para liberar o acesso',
+        );
+      }
+
+      const doesPasswordMatches = await compare(password, user.password);
+
+      if (!doesPasswordMatches) {
+        throw new InvalidCredentialsError();
+      }
+
+      return {
+        user,
+      };
+    } catch (error) {
+      throw error;
     }
-
-    if (!user.emailVerified) {
-      const { token, hashedToken } = await this.generateToken();
-      const now = new Date();
-      const emailVerifyTokenExpiry = now.setHours(now.getHours() + 1);
-
-      this.emailVerificationSender.sendVerificationEmail(token, email);
-      await this.userRepository.save(user.id, {
-        emailVerificationToken: hashedToken,
-        emailTokenExpiry: new Date(emailVerifyTokenExpiry),
-      });
-      throw new NotFoundError(
-        'Email não verificado, verifique seu email para liberar o acesso',
-      );
-    }
-
-    const doesPasswordMatches = await compare(password, user.password);
-
-    if (!doesPasswordMatches) {
-      throw new InvalidCredentialsError();
-    }
-
-    return {
-      user,
-    };
   }
 }

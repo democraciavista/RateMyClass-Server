@@ -10,11 +10,15 @@ export class GetByIdReactionUseCase {
   constructor(private ReactionRepository: IReactionRepository) {}
 
   async execute(id: string): Promise<GetByIdReactionUseCaseResponse> {
-    const Reaction = await this.ReactionRepository.findById(id);
-    if (!Reaction) {
-      throw new NotFoundError('Reação não encontrada');
-    }
+    try {
+      const Reaction = await this.ReactionRepository.findById(id);
+      if (!Reaction) {
+        throw new NotFoundError('Reação não encontrada');
+      }
 
-    return { Reaction };
+      return { Reaction };
+    } catch (error) {
+      throw error;
+    }
   }
 }
