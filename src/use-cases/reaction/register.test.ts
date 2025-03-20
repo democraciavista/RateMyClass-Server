@@ -1,16 +1,19 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { InMemoryReactionRepository } from '@repositories/in-memory/in-memory-reaction-repository';
 import { RegisterReactionUseCase } from './register';
-import { $Enums, Reaction } from '@prisma/client';
+import { $Enums } from '@prisma/client';
 import { AlreadyExistsError } from '@errors/already-exists-error';
+import { InMemoryMaterialRepository } from '@repositories/in-memory/in-memory-material-repository';
 
 let reactionRepository: InMemoryReactionRepository;
+let materialRepository: InMemoryMaterialRepository;
 let sut: RegisterReactionUseCase;
 
 describe('RegisterReaction Use Case', () => {
   beforeEach(() => {
     reactionRepository = new InMemoryReactionRepository();
-    sut = new RegisterReactionUseCase(reactionRepository);
+    materialRepository = new InMemoryMaterialRepository();
+    sut = new RegisterReactionUseCase(reactionRepository,materialRepository);
   });
 
   it('should register a new reaction successfully', async () => {
