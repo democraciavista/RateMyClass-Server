@@ -56,10 +56,10 @@ export class InMemoryReactionRepository implements IReactionRepository {
     return this.items;
   }
   async findByFiltres(data: {
-    type?: string;
-    userId?: string;
-    materialId?: string;
-    disciplineId?: string;
+    type?: string | null;
+    userId?: string | null;
+    materialId?: string | null;
+    disciplineId?: string | null;
   }) {
     const { type, userId, materialId, disciplineId } = data;
     const reactions = this.items.filter((reaction) => {
