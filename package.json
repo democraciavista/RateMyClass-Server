@@ -11,6 +11,8 @@
     "migration": "cross-env DATABASE_HOST='localhost' prisma migrate dev",
     "migration:deploy": "prisma migrate deploy",
     "migration:reset": "cross-env DATABASE_HOST='localhost' prisma migrate reset --force",
+    "db:pull": "cross-env DATABASE_HOST='localhost' prisma db pull",
+    "db:push": "cross-env DATABASE_HOST='localhost' prisma db push",
     "studio": "cross-env DATABASE_HOST='localhost' prisma studio",
     "generate": "prisma generate",
     "lint": "eslint ./src --ext .ts",
@@ -39,7 +41,8 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-security": "^2.1.1",
-    "prisma": "^5.11.0",
+    "prisma": "^6.5.0",
+    "prisma-dbml-generator": "^0.12.0",
     "tsconfig-paths": "^4.2.0",
     "tsup": "^8.0.2",
     "tsx": "^4.7.1",
@@ -48,7 +51,7 @@
     "vitest": "^1.4.0"
   },
   "dependencies": {
-    "@prisma/client": "^5.11.0",
+    "@prisma/client": "^6.5.0",
     "bcryptjs": "^2.4.3",
     "express": "^4.19.2",
     "json-2-csv": "^5.5.1",

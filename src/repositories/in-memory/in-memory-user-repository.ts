@@ -1,5 +1,6 @@
-import { $Enums, Prisma, User } from '@prisma/client';
-import { IUserRepository } from '@repositories/user-repository';
+import { NotFoundError } from '@errors/not-found-error';
+import { Prisma, User } from '@prisma/client';
+import { IUserRepository } from '@repositories/interface/user-repository';
 import { randomUUID } from 'node:crypto';
 
 export class InMemoryUserRepository implements IUserRepository {
@@ -8,15 +9,17 @@ export class InMemoryUserRepository implements IUserRepository {
   async create(data: Prisma.UserCreateInput) {
     const user = {
       id: randomUUID() as string,
-      name: data.name,
       email: data.email,
       password: data.password,
       emailVerificationToken: data.emailVerificationToken || null,
       emailTokenExpiry: new Date(data.emailTokenExpiry!),
+      resetPasswordToken: data.resetPasswordToken || null,
+      resetPasswordTokenExpiry: new Date(data.resetPasswordTokenExpiry!),
       emailVerified: data.emailVerified || false,
       createdAt: new Date(),
       updatedAt: new Date(),
-      role: data.role || 'CONSUMER',
+      role: data.role || 'STUDENT',
+      course: data.course || 'Sistemas de Informação',
     };
 
     this.items.push(user);
@@ -48,7 +51,7 @@ export class InMemoryUserRepository implements IUserRepository {
     const userIndex = this.items.findIndex((item) => item.id === id);
 
     if (userIndex === -1) {
-      throw new Error('User not found');
+      throw new NotFoundError('Usuário não encontrado');
     }
 
     const user = this.items[userIndex];
@@ -58,13 +61,20 @@ export class InMemoryUserRepository implements IUserRepository {
     return user;
   }
 
-  async save(user: User) {
-    const userIndex = this.items.findIndex((item) => item.id === user.id);
+  async save(id: string, user: Prisma.UserUpdateInput) {
+    const userIndex = this.items.findIndex((item) => item.id === id);
 
     if (userIndex >= 0) {
-      this.items[userIndex] = user;
+      this.items[userIndex] = {
+        ...this.items[userIndex],
+        ...(user as User),
+        updatedAt: new Date(),
+      };
     }
 
-    return user;
+    return this.items[userIndex];
+  }
+  async findAll() {
+    return this.items;
   }
 }

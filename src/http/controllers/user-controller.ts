@@ -1,15 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-
 import { UserRegisterSchema } from '@DTOs/user/register';
 import { VerifyEmailSchema } from '@DTOs/user/verify-email';
 import { AuthenticateSchema } from '@DTOs/user/authenticate';
-
-import { makeUserVerifyEmailUseCase } from '@use-cases/factories/user/make-user-verify-email-use-case';
-import { makeUserRegisterUseCase } from '@use-cases/factories/user/make-user-register-use-case';
-import { makeUserDeleteUseCase } from '@use-cases/factories/user/make-delete-use-case';
-import { makeUserAuthenticateUseCase } from '@use-cases/factories/user/make-authenticate-use-case';
-import { verifyPermission } from '@http/middlewares/verify-permission';
+import { VerifyPasswordSchema } from '@DTOs/user/verify-password';
+import {
+  makeUserAuthenticateUseCase,
+  makeUserDeleteUseCase,
+  makeUserGetAll,
+  makeUserGetByIdUseCase,
+  makeUserRegisterUseCase,
+  makeUserResetPasswordUseCase,
+  makeUserUpdateUseCase,
+  makeUserVerifyEmailUseCase,
+  makeUserVerifyPasswordUseCase,
+} from '@use-cases/factories/user';
+import { UserUpdateSchema } from '@DTOs/user/update';
 
 class UserController {
   async register(req: Request, res: Response, next: NextFunction) {
@@ -51,13 +57,55 @@ class UserController {
     }
   }
 
+  async verifyPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email, token, newPassword } = VerifyPasswordSchema.parse(
+        req.body,
+      );
+
+      const verifyPasswordUseCase = makeUserVerifyPasswordUseCase();
+
+      await verifyPasswordUseCase.execute({
+        email,
+        token,
+        newPassword,
+      });
+
+      res.status(200).json({
+        message: 'Senha alterada com sucesso!',
+      });
+
+      return next();
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async resetPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email } = req.params;
+
+      const resetPasswordUseCase = makeUserResetPasswordUseCase();
+
+      await resetPasswordUseCase.execute({ email });
+
+      res.status(200).json({
+        message: 'E-mail de recuperação de senha enviado com sucesso!',
+      });
+
+      return next();
+    } catch (error) {
+      return next(error);
+    }
+  }
+
   async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId } = req.params;
+      const { id } = req.params;
 
       const deleteUseCase = makeUserDeleteUseCase();
 
-      await deleteUseCase.execute(userId);
+      await deleteUseCase.execute(id);
 
       res.status(200).json({
         message: 'Usuário deletado com sucesso!',
@@ -66,6 +114,20 @@ class UserController {
       return next();
     } catch (error) {
       return next(error);
+    }
+  }
+
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    try {
+      const getAllUseCase = makeUserGetAll();
+      const users = await getAllUseCase.execute();
+      res.status(200).json({
+        data: users,
+        message: 'Usuários encontrados com sucesso!',
+      });
+      return next();
+    } catch (error) {
+      return next;
     }
   }
 
@@ -104,6 +166,42 @@ class UserController {
           accessToken,
         },
         message: 'Usuário autenticado com sucesso!',
+      });
+
+      return next();
+    } catch (error) {
+      return next(error);
+    }
+  }
+  async getById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+
+      const getByIdUseCase = makeUserGetByIdUseCase();
+
+      const { user } = await getByIdUseCase.execute(id);
+
+      res.status(200).json({
+        data: user,
+        message: 'Usuário encontrado com sucesso!',
+      });
+
+      return next();
+    } catch (error) {
+      return next(error);
+    }
+  }
+  async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const data = UserUpdateSchema.parse(req.body);
+
+      const updateUseCase = makeUserUpdateUseCase();
+
+      await updateUseCase.execute({ id, data });
+
+      res.status(200).json({
+        message: 'Usuário atualizado com sucesso!',
       });
 
       return next();

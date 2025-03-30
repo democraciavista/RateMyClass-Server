@@ -6,21 +6,32 @@ import { InMemoryUserRepository } from '@repositories/in-memory/in-memory-user-r
 import { InvalidCredentialsError } from '@errors/invalid-credentials-error';
 
 import { AuthenticateUseCase } from './authenticate';
+import { genToken } from '@utils/genToken';
+import { EmailVerificationSender } from '@services/email-verification-sender';
 
 let userRepository: InMemoryUserRepository;
+let emailVerificationSender: EmailVerificationSender;
 let sut: AuthenticateUseCase;
+let generatedToken: () => Promise<{ token: string; hashedToken: string }>;
 
 describe('Authenticate Use Case', () => {
   beforeEach(() => {
     userRepository = new InMemoryUserRepository();
-    sut = new AuthenticateUseCase(userRepository);
+    emailVerificationSender = new EmailVerificationSender();
+    generatedToken = genToken;
+    sut = new AuthenticateUseCase(
+      userRepository,
+      emailVerificationSender,
+      generatedToken,
+    );
   });
 
   it('should authenticate a user', async () => {
     await userRepository.create({
-      name: 'John Doe',
       email: 'johndoe@email.com',
       password: await hash('123456', 6),
+      course: 'course',
+      emailVerified: true,
     });
 
     const { user } = await sut.execute({
@@ -29,7 +40,6 @@ describe('Authenticate Use Case', () => {
     });
 
     expect(user.id).toEqual(expect.any(String));
-    expect(user.name).toBe('John Doe');
   });
 
   it('should not be able to authenticate with wrong email', async () => {
@@ -43,9 +53,10 @@ describe('Authenticate Use Case', () => {
 
   it('should not be able to authenticate with wrong password', async () => {
     await userRepository.create({
-      name: 'John Doe',
       email: 'johndoe@example.com',
       password: await hash('123456', 6),
+      course: 'course',
+      emailVerified: true,
     });
 
     await expect(() =>

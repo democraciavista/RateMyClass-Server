@@ -2,7 +2,7 @@ import { Prisma, User } from '@prisma/client';
 
 import prisma from '@database';
 
-import { IUserRepository } from '@repositories/user-repository';
+import { IUserRepository } from '@repositories/interface/user-repository';
 
 export class PrismaUserRepository implements IUserRepository {
   async create(data: Prisma.UserCreateInput): Promise<User> {
@@ -29,9 +29,15 @@ export class PrismaUserRepository implements IUserRepository {
     return user;
   }
 
-  async save(data: User): Promise<User> {
-    const user = await prisma.user.update({ where: { id: data.id }, data });
+  async save(id: string, data: Prisma.UserUpdateInput): Promise<User> {
+    const user = await prisma.user.update({ where: { id: id }, data });
 
     return user;
+  }
+  async findAll(): Promise<User[]> {
+    //getvalues
+    console.log('🔥 Prisma importado:', Object.keys(prisma));
+
+    return [];
   }
 }
