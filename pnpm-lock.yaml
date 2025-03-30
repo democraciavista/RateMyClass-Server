@@ -87,6 +87,9 @@ importers:
       eslint-plugin-import:
         specifier: ^2.29.1
         version: 2.29.1(@typescript-eslint/parser@7.4.0(eslint@8.57.0)(typescript@5.4.3))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
+      eslint-plugin-jest:
+        specifier: ^28.11.0
+        version: 28.11.0(@typescript-eslint/eslint-plugin@7.4.0(@typescript-eslint/parser@7.4.0(eslint@8.57.0)(typescript@5.4.3))(eslint@8.57.0)(typescript@5.4.3))(eslint@8.57.0)(typescript@5.4.3)
       eslint-plugin-node:
         specifier: ^11.1.0
         version: 11.1.0(eslint@8.57.0)
@@ -1316,6 +1319,19 @@ packages:
       eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
     peerDependenciesMeta:
       '@typescript-eslint/parser':
+        optional: true
+
+  eslint-plugin-jest@28.11.0:
+    resolution: {integrity: sha512-QAfipLcNCWLVocVbZW8GimKn5p5iiMcgGbRzz8z/P5q7xw+cNEpYqyzFMtIF/ZgF2HLOyy+dYBut+DoYolvqig==}
+    engines: {node: ^16.10.0 || ^18.12.0 || >=20.0.0}
+    peerDependencies:
+      '@typescript-eslint/eslint-plugin': ^6.0.0 || ^7.0.0 || ^8.0.0
+      eslint: ^7.0.0 || ^8.0.0 || ^9.0.0
+      jest: '*'
+    peerDependenciesMeta:
+      '@typescript-eslint/eslint-plugin':
+        optional: true
+      jest:
         optional: true
 
   eslint-plugin-node@11.1.0:
@@ -4299,6 +4315,16 @@ snapshots:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
       - supports-color
+
+  eslint-plugin-jest@28.11.0(@typescript-eslint/eslint-plugin@7.4.0(@typescript-eslint/parser@7.4.0(eslint@8.57.0)(typescript@5.4.3))(eslint@8.57.0)(typescript@5.4.3))(eslint@8.57.0)(typescript@5.4.3):
+    dependencies:
+      '@typescript-eslint/utils': 7.4.0(eslint@8.57.0)(typescript@5.4.3)
+      eslint: 8.57.0
+    optionalDependencies:
+      '@typescript-eslint/eslint-plugin': 7.4.0(@typescript-eslint/parser@7.4.0(eslint@8.57.0)(typescript@5.4.3))(eslint@8.57.0)(typescript@5.4.3)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
 
   eslint-plugin-node@11.1.0(eslint@8.57.0):
     dependencies:

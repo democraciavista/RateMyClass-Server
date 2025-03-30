@@ -13,9 +13,9 @@ export const MaterialRegisterSchema=z.object({
         invalid_type_error:'O userId precisa ser uma string',
         required_error:'O userId é obrigatório'
     }),
-    subjectId:z.string({
-        invalid_type_error:'O subjectId precisa ser uma string',
-        required_error:'O subjectId é obrigatório'
+    disciplineId:z.string({
+        invalid_type_error:'O disciplineId precisa ser uma string',
+        required_error:'O disciplineId é obrigatório'
     })
 })
 

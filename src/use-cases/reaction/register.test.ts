@@ -4,16 +4,38 @@ import { RegisterReactionUseCase } from './register';
 import { $Enums } from '@prisma/client';
 import { AlreadyExistsError } from '@errors/already-exists-error';
 import { InMemoryMaterialRepository } from '@repositories/in-memory/in-memory-material-repository';
+import { InMemoryReviewRepository } from '@repositories/in-memory/in-memory-review-repository';
+import { StatisticService } from '@services/statistics';
+import { InMemoryStatisticRepository } from '@repositories/in-memory/in-memory-statistic-repository';
+import { InMemoryDisciplineRepository } from '@repositories/in-memory/in-memory-discipline-repository';
 
 let reactionRepository: InMemoryReactionRepository;
 let materialRepository: InMemoryMaterialRepository;
+let reviewRepository: InMemoryReviewRepository;
+let disciplineRepository: InMemoryDisciplineRepository;
+let statisticService: StatisticService;
+let staticticRepository: InMemoryStatisticRepository;
 let sut: RegisterReactionUseCase;
 
 describe('RegisterReaction Use Case', () => {
   beforeEach(() => {
     reactionRepository = new InMemoryReactionRepository();
     materialRepository = new InMemoryMaterialRepository();
-    sut = new RegisterReactionUseCase(reactionRepository,materialRepository);
+    reviewRepository = new InMemoryReviewRepository();
+    staticticRepository = new InMemoryStatisticRepository();
+    statisticService = new StatisticService(
+      reviewRepository,
+      staticticRepository,
+    );
+    disciplineRepository = new InMemoryDisciplineRepository();
+
+    sut = new RegisterReactionUseCase(
+      disciplineRepository,
+      materialRepository,
+      reviewRepository,
+      reactionRepository,
+      statisticService,
+    );
   });
 
   it('should register a new reaction successfully', async () => {

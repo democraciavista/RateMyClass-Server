@@ -20,35 +20,39 @@ export class VerifyPasswordUseCase {
   async execute(
     data: VerifyPasswordUseCaseRequest,
   ): Promise<VerifyPasswordUseCaseResponse> {
-    const user = await this.userRepository.findByEmail(data.email);
+    try {
+      const user = await this.userRepository.findByEmail(data.email);
 
-    if (!user) {
-      throw new NotFoundError('Usuário não encontrado');
+      if (!user) {
+        throw new NotFoundError('Usuário não encontrado');
+      }
+
+      if (!user.resetPasswordToken || !user.resetPasswordTokenExpiry) {
+        throw new InvalidTokenError();
+      }
+
+      if (user.resetPasswordTokenExpiry < new Date()) {
+        throw new InvalidTokenError();
+      }
+
+      const isTokenValid = await compare(data.token, user.resetPasswordToken);
+
+      if (!isTokenValid) {
+        throw new InvalidTokenError();
+      }
+      const hashedPassword = await hash(data.newPassword, 8);
+
+      const userUpdated = await this.userRepository.save(user.id, {
+        resetPasswordToken: null,
+        resetPasswordTokenExpiry: null,
+        password: hashedPassword,
+      });
+
+      return {
+        user: userUpdated,
+      };
+    } catch (error) {
+      throw error;
     }
-
-    if (!user.resetPasswordToken || !user.resetPasswordTokenExpiry) {
-      throw new InvalidTokenError();
-    }
-
-    if (user.resetPasswordTokenExpiry < new Date()) {
-      throw new InvalidTokenError();
-    }
-
-    const isTokenValid = await compare(data.token, user.resetPasswordToken);
-
-    if (!isTokenValid) {
-      throw new InvalidTokenError();
-    }
-    const hashedPassword = await hash(data.newPassword, 8);
-
-    const userUpdated = await this.userRepository.save(user.id, {
-      resetPasswordToken: null,
-      resetPasswordTokenExpiry: null,
-      password: hashedPassword,
-    });
-
-    return {
-      user: userUpdated,
-    };
   }
 }

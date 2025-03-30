@@ -4,14 +4,20 @@ import { UpdateReactionUseCase } from './update';
 import { NotFoundError } from '@errors/not-found-error';
 import { AlreadyExistsError } from '@errors/already-exists-error';
 import { $Enums, Reaction } from '@prisma/client';
+import { InMemoryMaterialRepository } from '@repositories/in-memory/in-memory-material-repository';
+import { InMemoryReviewRepository } from '@repositories/in-memory/in-memory-review-repository';
 
 let reactionRepository: InMemoryReactionRepository;
+let materialRepository: InMemoryMaterialRepository;
+let reviewRepository: InMemoryReviewRepository;
 let sut: UpdateReactionUseCase;
 
 describe('ModifyReaction Use Case', () => {
   beforeEach(() => {
     reactionRepository = new InMemoryReactionRepository();
-    sut = new UpdateReactionUseCase(reactionRepository);
+    materialRepository= new InMemoryMaterialRepository();
+    reviewRepository = new InMemoryReviewRepository();
+    sut = new UpdateReactionUseCase(reactionRepository, materialRepository, reviewRepository);
   });
 
   it('should update a reaction successfully when it exists and no conflicts', async () => {
@@ -23,6 +29,7 @@ describe('ModifyReaction Use Case', () => {
       type: $Enums.ReactionType.LIKE,
       createdAt: new Date(),
       updatedAt: new Date(),
+      reviewId: null,
     };
 
     await reactionRepository.create(reactionData);
@@ -52,6 +59,7 @@ describe('ModifyReaction Use Case', () => {
       type: $Enums.ReactionType.LIKE,
       createdAt: new Date(),
       updatedAt: new Date(),
+      reviewId: null,
     };
 
     const reactionData2: Reaction = {
@@ -62,6 +70,7 @@ describe('ModifyReaction Use Case', () => {
       type: $Enums.ReactionType.REPORT,
       createdAt: new Date(),
       updatedAt: new Date(),
+      reviewId: null,
     };
 
     await reactionRepository.create(reactionData);

@@ -9,10 +9,14 @@ export class GetByIdDisciplineUseCase {
   constructor(private disciplineRepository: IDisciplineRepository) {}
 
   async execute(id: string): Promise<GetByIdDisciplineUseCaseResponse> {
-    const discipline = await this.disciplineRepository.findById(id);
-    if (!discipline) {
-      throw new NotFoundError('Disciplina não encontrada');
+    try {
+      const discipline = await this.disciplineRepository.findById(id);
+      if (!discipline) {
+        throw new NotFoundError('Disciplina não encontrada');
+      }
+      return { discipline };
+    } catch (error) {
+      throw error;
     }
-    return { discipline };
   }
 }

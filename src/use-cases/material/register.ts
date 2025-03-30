@@ -24,6 +24,7 @@ export class RegisterMaterialUseCase {
   async execute(
     data: RegisterMaterialUseCaseRequest,
   ): Promise<RegisterMaterialUseCaseResponse> {
+    try {
     const userExist = await this.userRepository.findById(data.userId);
     if (!userExist) {
       throw new NotFoundError('Usuário não encontrado');
@@ -35,5 +36,8 @@ export class RegisterMaterialUseCase {
     const material = await this.materialRepository.create(data);
 
     return { material };
+  }catch (error) {
+      throw error;
+    }
   }
 }

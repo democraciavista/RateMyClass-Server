@@ -13,11 +13,15 @@ export class UpdateMaterialUseCase {
     id: string,
     data: Prisma.MaterialUpdateInput,
   ): Promise<RegisterMaterialUseCaseResponse> {
-    const materialExist = await this.materialRepository.findById(id);
-    if (!materialExist) {
-      throw new NotFoundError('Material não encontrado');
+    try {
+      const materialExist = await this.materialRepository.findById(id);
+      if (!materialExist) {
+        throw new NotFoundError('Material não encontrado');
+      }
+      const material = await this.materialRepository.update(id, data);
+      return { material };
+    } catch (error) {
+      throw error;
     }
-    const material = await this.materialRepository.update(id, data);
-    return { material };
   }
 }

@@ -22,6 +22,7 @@ describe('FetchSingleReaction Use Case', () => {
       type: $Enums.ReactionType.LIKE,
       createdAt: new Date(),
       updatedAt: new Date(),
+      reviewId: null,
     };
 
     await reactionRepository.create(reactionData);

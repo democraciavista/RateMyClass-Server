@@ -9,14 +9,46 @@ import { ReactionRegisterSchema } from '@DTOs/reaction/register';
 import { ReactionUpdateSchema } from '@DTOs/reaction/update';
 import { NextFunction, Request, Response } from 'express';
 
-class ReactionControler {
+class reactionControler {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const data = ReactionRegisterSchema.parse(req.body);
       const registerUseCase = makeRegisterReactionUseCase();
-      await registerUseCase.execute(data);
+      const { type } = await registerUseCase.execute(data);
+      let message = 'Reação criada com sucesso!';
+
+      if (type) {
+        switch (type) {
+          case 'DeleteMaterial':
+            message = 'Material deletado devido número de denúncias!';
+            break;
+          case 'DeleteReview':
+            message = 'Avaliação deletada devido número de denúncias!';
+            break;
+          case 'ReportMaterial':
+            message = 'Material reportado com sucesso!';
+            break;
+          case 'ReportReview':
+            message = 'Avaliação reportada com sucesso!';
+            break;
+          case 'LikeMaterial':
+            message = 'Material curtido com sucesso!';
+            break;
+          case 'LikeReview':
+            message = 'Avaliação curtida com sucesso!';
+            break;
+          case 'FavoriteMaterial':
+            message = 'Material favoritado com sucesso!';
+            break;
+          case 'FavoriteDiscipline':
+            message = 'Disciplina favoritada com sucesso!';
+            break;
+          default:
+            message = 'Reação criada com sucesso!';
+        }
+      }
       res.status(201).json({
-        message: 'Reação criada com sucesso!',
+        message: message,
       });
       return next();
     } catch (error) {
@@ -55,11 +87,11 @@ class ReactionControler {
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const getAllUseCase = makeGetAllReactionUseCase();
-      const Reactions = await getAllUseCase.execute();
+      const { Reaction } = await getAllUseCase.execute();
 
       res.status(200).json({
         message: 'Reações encontradas com sucesso!',
-        data: Reactions,
+        data: Reaction,
       });
       return next();
     } catch (error) {
@@ -83,4 +115,4 @@ class ReactionControler {
   }
 }
 
-export default new ReactionControler();
+export default new reactionControler();

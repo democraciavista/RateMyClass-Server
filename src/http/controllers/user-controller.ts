@@ -83,7 +83,7 @@ class UserController {
 
   async resetPassword(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email } = req.params;
+      const { email } = req.body;
 
       const resetPasswordUseCase = makeUserResetPasswordUseCase();
 

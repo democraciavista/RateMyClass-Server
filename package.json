@@ -17,8 +17,9 @@
     "generate": "prisma generate",
     "lint": "eslint ./src --ext .ts",
     "lint:fix": "eslint ./src --ext .ts --fix",
+    "typecheck": "tsc --noEmit --skipLibCheck",
     "test": "vitest run --dir ./src/use-cases",
-    "test:ci": "cross-env EMAIL=teste.damatta@gmail.com EMAIL_PASSWORD='bhyp tggt gkbf dpxc' vitest run --dir ./src/use-cases"
+    "test:ci": "cross-env EMAIL=teste.damatta@gmail.ecom EMAIL_PASSWORD='bhyp tggt gkbf dpxc' vitest run --dir ./src/use-cases"
   },
   "keywords": [],
   "author": "",
@@ -41,6 +42,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jest": "^28.11.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-security": "^2.1.1",
     "prisma": "^6.5.0",

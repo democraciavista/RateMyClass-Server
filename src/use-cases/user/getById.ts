@@ -10,10 +10,14 @@ export class GetByIdUseCase {
   constructor(private userRepository: IUserRepository) {}
 
   async execute(id: string): Promise<GeyByIdUseCaseResponse> {
-    const user = await this.userRepository.findById(id);
-    if (!user) {
-      throw new NotFoundError('Usuário não encontrado');
+    try {
+      const user = await this.userRepository.findById(id);
+      if (!user) {
+        throw new NotFoundError('Usuário não encontrado');
+      }
+      return { user };
+    } catch (error) {
+      throw error;
     }
-    return { user };
   }
 }

@@ -1,7 +1,10 @@
-import 'dotenv/config';
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const MailServer = async (EmailConfig: {
+  userName: string;
   subjectText: string;
   html: string;
   userEmail: string;
@@ -18,8 +21,8 @@ export const MailServer = async (EmailConfig: {
     });
 
     await transporter.sendMail({
-      from: `[Rate My Class] <${process.env.EMAIL}>`,
-      to: EmailConfig.userEmail,
+      from: process.env.EMAIL,
+      to: `${EmailConfig.userEmail}`,
       subject: EmailConfig.subjectText,
       html: EmailConfig.html,
     });

@@ -21,6 +21,7 @@ describe('RemoveReaction Use Case', () => {
       disciplineId: null,
       type: $Enums.ReactionType.LIKE,
       createdAt: new Date(),
+      reviewId: null,
       updatedAt: new Date(),
     };
 

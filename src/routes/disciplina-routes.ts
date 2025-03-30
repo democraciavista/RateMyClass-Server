@@ -1,13 +1,13 @@
+import { disciplineController } from '@http/controllers/discipline-controller';
 import { Router } from 'express';
-import { disciplinaController } from '../http/controllers/disciplina-controller';
 
 const disciplineRouter = Router();
 
-disciplineRouter.post('/', disciplinaController.register);
-disciplineRouter.get('/:id', disciplinaController.getById);
-disciplineRouter.get('/', disciplinaController.getAllByFiltres);
-disciplineRouter.put('/:id', disciplinaController.update);
-disciplineRouter.delete('/:id', disciplinaController.delete);
-disciplineRouter.get('/favorite/:id', disciplinaController.getAllFavoriteByFiltres);
+disciplineRouter.post('/', disciplineController.register);
+disciplineRouter.get('/:id', disciplineController.getById);
+disciplineRouter.get('/', disciplineController.getAllByFiltres);
+disciplineRouter.put('/:id', disciplineController.update);
+disciplineRouter.delete('/:id', disciplineController.delete);
+disciplineRouter.get('/favorite/:id', disciplineController.getAllFavoriteByFiltres);
 
 export default disciplineRouter;

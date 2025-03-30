@@ -19,6 +19,7 @@ export class EmailVerificationSender {
     let attempts = 0;
     while (!emailSend && attempts < 3) {
       const mailResponse = await MailServer({
+        userName: email,
         html,
         subjectText: getSubjectText(type),
         userEmail: email,

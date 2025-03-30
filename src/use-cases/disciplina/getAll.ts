@@ -9,7 +9,11 @@ export class GetAllDisciplineUseCase {
   constructor(private disciplineRepository: IDisciplineRepository) {}
 
   async execute(): Promise<GetAllDisciplineUseCaseResponse> {
+    try {
     const disciplines = await this.disciplineRepository.findAll();
     return { disciplines };
+  }catch (error) {
+      throw error;
+    }
   }
 }

@@ -57,10 +57,12 @@ model Reaction {
   userId     String       @map("user_id")
   materialId String?      @map("material_id")
   disciplineId  String?      @map("discipline_id")
+  reviewId   String?      @map("review_id")
   createdAt  DateTime     @default(now()) @map("created_at")
   updatedAt  DateTime     @updatedAt @map("updated_at")
   material   Material?    @relation(fields: [materialId], references: [id], onDelete: Cascade)
   discipline    Discipline?     @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+  review     Review?     @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, materialId, type])
@@ -73,6 +75,7 @@ enum Role {
   STUDENT
 }
 
+
 enum ReactionType {
   LIKE
   REPORT
@@ -81,7 +84,7 @@ enum ReactionType {
 
 model Discipline {
   id          String       @id @default(uuid())
-  code        String       @unique
+  code        String       
   name        String
   professor   String
   course    String
@@ -94,7 +97,7 @@ model Discipline {
 
   reviews     Review[]  
   materials   Material[]   
-  statistics  Statistic[] 
+  statistics  Statistic? 
   reactions Reaction[]
 
 
@@ -112,20 +115,22 @@ model Review {
   droppedOut             Boolean   @map("dropped_out")
   difficultyLevel        Float       @map("difficulty_level")
   disciplineScore        Float     @map("discipline_score")
-  comment                String
-  recommendation         String
+  comment                String?
+  recommendation         String?
   createdAt              DateTime  @default(now()) @map("created_at")
   updatedAt              DateTime  @updatedAt @map("updated_at")
 
   discipline Discipline @relation(fields: [disciplineId], references: [id])
-  user       User       @relation(fields: [userId], references: [id])
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  reactions Reaction[]
 
   @@map("reviews")
 }
 
 model Statistic {
   id                     String    @id @default(uuid())
-  disciplineId           String    @map("discipline_id")
+  disciplineId           String    @map("discipline_id") @unique
   totalReviews           Int       @map("total_reviews")
   averageGrades          Float     @map("average_grades")
   averageTeachingScore   Float     @map("average_teaching_score")
@@ -135,8 +140,8 @@ model Statistic {
   approvalRate           Float     @map("approval_rate") 
   createdAt              DateTime  @default(now()) @map("created_at")
   updatedAt              DateTime  @updatedAt @map("updated_at")
+  discipline Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
 
-  discipline Discipline @relation(fields: [disciplineId], references: [id])
 
   @@map("statistics")
 }

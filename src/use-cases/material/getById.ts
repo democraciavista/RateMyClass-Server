@@ -10,11 +10,15 @@ export class GetByIdMaterialUseCase {
   constructor(private materialRepository: IMaterialRepository) {}
 
   async execute(id: string): Promise<GetByIdMaterialUseCaseResponse> {
+    try {
     const material = await this.materialRepository.findById(id);
     if (!material) {
       throw new NotFoundError('Material não encontrado');
     }
 
     return { material };
+  }catch (error) {
+      throw error;
+    }
   }
 }

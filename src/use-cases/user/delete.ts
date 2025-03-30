@@ -11,12 +11,16 @@ export class DeleteUseCase {
   constructor(private userRepository: IUserRepository) {}
 
   async execute(id: string): Promise<DeleteUseCaseResponse> {
-    const userAlreadyExists = await this.userRepository.findById(id);
-    if (!userAlreadyExists) {
-      new NotFoundError('Usuário não encontrado');
-    }
-    const user = await this.userRepository.delete(id);
+    try {
+      const userAlreadyExists = await this.userRepository.findById(id);
+      if (!userAlreadyExists) {
+        new NotFoundError('Usuário não encontrado');
+      }
+      const user = await this.userRepository.delete(id);
 
-    return { user };
+      return { user };
+    } catch (error) {
+      throw error;
+    }
   }
 }

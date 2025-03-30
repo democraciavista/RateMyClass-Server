@@ -14,5 +14,6 @@ export interface IReactionRepository {
     userId?: string | null;
     materialId?: string | null;
     disciplineId?: string | null;
+    reviewId?: string | null;
   }) => Promise<Reaction[]>;
 }

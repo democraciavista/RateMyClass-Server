@@ -29,18 +29,20 @@ export class PrismaReactionRepository implements IReactionRepository {
     return reactions;
   }
   async findByFiltres(data: {
-    type?: $Enums.ReactionType;
-    userId?: string;
-    materialId?: string;
-    disciplineId?: string;
+    type?: $Enums.ReactionType | null;
+    userId?: string | null;
+    materialId?: string | null;
+    disciplineId?: string | null;
+    reviewId?: string | null;
   }) {
-    const { type, userId, materialId, disciplineId } = data;
+    const { type, userId, materialId, disciplineId, reviewId } = data;
     const reactions = await prisma.reaction.findMany({
       where: {
         type: type ? { equals: type } : undefined,
         userId: userId ? { equals: userId } : undefined,
         materialId: materialId ? { equals: materialId } : undefined,
         disciplineId: disciplineId ? { equals: disciplineId } : undefined,
+        reviewId: reviewId ? { equals: reviewId } : undefined,
       },
     });
 

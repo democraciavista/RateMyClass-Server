@@ -87,7 +87,7 @@ class MaterialControler {
         MaterialGetWithFilterSchema.parse(req.query);
       const { id } = req.params;
       const getFavoriteUseCase = makeGetFavoriteWithFiltresMaterialUseCase();
-      const materials = await getFavoriteUseCase.execute({
+      const {material} = await getFavoriteUseCase.execute({
         userId: id,
         curso,
         disciplina,
@@ -98,7 +98,7 @@ class MaterialControler {
       });
       res.status(200).json({
         message: 'Materiais encontrados com sucesso!',
-        data: materials,
+        data: material,
       });
       return next();
     } catch (error) {

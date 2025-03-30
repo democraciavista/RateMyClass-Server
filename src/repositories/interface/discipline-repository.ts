@@ -33,4 +33,8 @@ export interface IDisciplineRepository {
     ordemBy?: string,
   ) => Promise<Discipline[]>;
   findAll: () => Promise<Discipline[]>;
+  findDisciplineWtithReview: (
+    disciplineId: string,
+    userId: string,
+  ) => Promise<Discipline | null>;
 }
