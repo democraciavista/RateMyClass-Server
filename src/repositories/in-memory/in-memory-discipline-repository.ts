@@ -172,12 +172,9 @@ export class InMemoryDisciplineRepository implements IDisciplineRepository {
     }
     disciplines = disciplines.filter((discipline) =>
       discipline.reactions?.some((reaction) => {
-        return (
-          reaction.userId === userId && reaction.type === 'FAVORITE'
-        );
-      }
-    ));
-   
+        return reaction.userId === userId && reaction.type === 'FAVORITE';
+      }),
+    );
 
     if (ordem && ordemBy && disciplines.length > 0) {
       disciplines = disciplines.sort((a, b) => {
@@ -201,5 +198,36 @@ export class InMemoryDisciplineRepository implements IDisciplineRepository {
     }
 
     return disciplines;
+  }
+  async addItemWithFavorite(
+    data: Prisma.DisciplineUncheckedCreateInput & {
+      reactions: Prisma.ReactionUncheckedCreateInput[];
+    },
+  ) {
+    const discipline: Discipline = {
+      id: randomUUID(),
+      name: data.name,
+      code: data.code,
+      course: data.course,
+      center: data.center,
+      period: data.period as number,
+      professor: data.professor,
+      type: data.type,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      hours: data.hours,
+    };
+    this.items.push({
+      ...discipline,
+      reactions: (data.reactions ?? []).map((reaction) => ({
+        id: randomUUID(),
+        disciplineId: discipline.id,
+        materialId: null,
+        type: reaction.type ?? 'FAVORITE',
+        userId: reaction.userId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })),
+    });
   }
 }

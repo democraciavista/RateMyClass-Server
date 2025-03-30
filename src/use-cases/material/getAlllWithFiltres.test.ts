@@ -19,7 +19,7 @@ describe('GetAllWithFiltresMaterial Use Case', () => {
         title: 'Material 1',
         link: 'link1',
         userId: '1',
-        subjectId: '1',
+        disciplineId: '1',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -28,7 +28,7 @@ describe('GetAllWithFiltresMaterial Use Case', () => {
         title: 'Material 2',
         link: 'link2',
         userId: '1',
-        subjectId: '2',
+        disciplineId: '2',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -37,7 +37,7 @@ describe('GetAllWithFiltresMaterial Use Case', () => {
         title: 'Material 3',
         link: 'link3',
         userId: '2',
-        subjectId: '1',
+        disciplineId: '1',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -50,7 +50,7 @@ describe('GetAllWithFiltresMaterial Use Case', () => {
       professor: 'Professor X',
     };
 
-    const { material } = await sut.execute(requestData);
+    const material = await sut.execute(requestData);
 
     expect(material.length).toBe(1);
     expect(material[0].title).toEqual('Material 1');
@@ -63,7 +63,7 @@ describe('GetAllWithFiltresMaterial Use Case', () => {
         title: 'Material 1',
         link: 'link1',
         userId: '1',
-        subjectId: '1',
+        disciplineId: '1',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -72,7 +72,7 @@ describe('GetAllWithFiltresMaterial Use Case', () => {
         title: 'Material 2',
         link: 'link2',
         userId: '1',
-        subjectId: '2',
+        disciplineId: '2',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -85,7 +85,7 @@ describe('GetAllWithFiltresMaterial Use Case', () => {
       professor: 'Professor Y',
     };
 
-    const { material } = await sut.execute(requestData);
+    const material = await sut.execute(requestData);
 
     expect(material.length).toBe(0);
   });
@@ -97,7 +97,7 @@ describe('GetAllWithFiltresMaterial Use Case', () => {
         title: 'Material 1',
         link: 'link1',
         userId: '1',
-        subjectId: '1',
+        disciplineId: '1',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -106,7 +106,7 @@ describe('GetAllWithFiltresMaterial Use Case', () => {
         title: 'Material 2',
         link: 'link2',
         userId: '1',
-        subjectId: '2',
+        disciplineId: '2',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -114,7 +114,7 @@ describe('GetAllWithFiltresMaterial Use Case', () => {
 
     materialData.forEach((material) => materialRepository.create(material));
 
-    const { material } = await sut.execute({});
+    const material = await sut.execute({});
 
     expect(material.length).toBe(2);
   });
