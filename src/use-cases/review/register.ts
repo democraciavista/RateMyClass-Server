@@ -32,6 +32,13 @@ export class RegisterReviewUseCase {
     data: RegisterReviewUseCaseRequest,
   ): Promise<RegisterReviewUseCaseResponse> {
     const { disciplineId, userId, ...rest } = data;
+    const disciplineExists = await this.disciplinaRepository.findById(
+      disciplineId,
+    );
+    if (!disciplineExists) {
+      throw new AlreadyExistsError('Essa disciplina não existe');
+    }
+
     const reviewAlreadyExists =
       await this.disciplinaRepository.findDisciplineWtithReview(
         data.disciplineId,

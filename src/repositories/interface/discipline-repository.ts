@@ -35,6 +35,6 @@ export interface IDisciplineRepository {
   findAll: () => Promise<Discipline[]>;
   findDisciplineWtithReview: (
     disciplineId: string,
-    userId?: string,
+    userId: string,
   ) => Promise<Discipline | null>;
 }

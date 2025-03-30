@@ -13,7 +13,7 @@ router.use('/material', MaterialRouter);
 router.use('/reaction', ReactionRouter);
 router.use('/discipline', DisciplineRouter);
 router.use('/review', ReviewRouter);
-router.use('/static', StatisticRouter);
+router.use('/statistic', StatisticRouter);
 
 router.route('/').get((_, res) => {
   res.send('Bem vindo a API do Rate My Class💙');

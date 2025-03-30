@@ -20,7 +20,7 @@ class reviewController {
         status: 201,
         message: 'Avaliação criada com sucesso!',
       };
-      return next();
+      return next(res.locals);
     } catch (error) {
       return next(error);
     }
@@ -64,6 +64,7 @@ class reviewController {
         message: 'Avaliações encontradas com sucesso!',
         data: reviews,
       };
+      res.json(res.locals);
       return next();
     } catch (error) {
       return next(error);

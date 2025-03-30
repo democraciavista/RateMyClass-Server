@@ -3,7 +3,6 @@ import { z } from 'zod';
 export const ReviewRegisterSchema = z.object({
   disciplineId: z.string().uuid(),
   userId: z.string().uuid(),
-  passedFirstTime: z.boolean(),
   finalGrade: z
     .number()
     .min(0, 'A Nota deve ser entre 0 e 10')

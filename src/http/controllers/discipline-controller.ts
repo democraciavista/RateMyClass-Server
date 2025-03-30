@@ -126,7 +126,7 @@ class DisciplineController {
         data: disciplines,
       };
 
-      console.log('💜💜💜💜');
+      res.json(res.locals);
       return next();
     } catch (error) {
       return next(error);
