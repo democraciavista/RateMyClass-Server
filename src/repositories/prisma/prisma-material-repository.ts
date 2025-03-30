@@ -50,9 +50,9 @@ export class PrismaMaterialRepository implements IMaterialRepository {
     const materials = await prisma.material.findMany({
       where: {
         title: title ? { contains: title } : undefined,
-        subject: {
+        discipline: {
           name: disciplina ? { contains: disciplina } : undefined,
-          couse: curso ? { contains: curso } : undefined,
+          course: curso ? { contains: curso } : undefined,
           professor: professor ? { contains: professor } : undefined,
         },
       },
@@ -75,9 +75,9 @@ export class PrismaMaterialRepository implements IMaterialRepository {
     const materials = await prisma.material.findMany({
       where: {
         title: title ? { contains: title } : undefined,
-        subject: {
+        discipline: {
           name: disciplina ? { contains: disciplina } : undefined,
-          couse: curso ? { contains: curso } : undefined,
+          course: curso ? { contains: curso } : undefined,
           professor: professor ? { contains: professor } : undefined,
         },
         reactions: {
