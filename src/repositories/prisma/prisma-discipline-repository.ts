@@ -96,4 +96,20 @@ export class PrismaDisciplineRepository implements IDisciplineRepository {
     });
     return disciplines;
   }
+  async findDisciplineWtithReview(
+    disciplineId: string,
+    userId?: string,
+  ) {
+    const discipline = await prisma.discipline.findUnique({
+      where: { id: disciplineId },
+      include: {
+        reviews: {
+          where: {
+            userId,
+          },
+        },
+      },
+    });
+    return discipline;
+  }
 }

@@ -1,9 +1,11 @@
-import { $Enums, Discipline, Prisma, Reaction } from '@prisma/client';
+import { $Enums, Discipline, Prisma, Reaction, Review } from '@prisma/client';
 import { IDisciplineRepository } from '@repositories/interface/discipline-repository';
 import { randomUUID } from 'node:crypto';
 
 export class InMemoryDisciplineRepository implements IDisciplineRepository {
-  public items: (Discipline & { reactions?: Reaction[] })[] = [];
+  public items: (Discipline & { reactions?: Reaction[] } & {
+    review?: Review[];
+  })[] = [];
   async create(data: Prisma.DisciplineUncheckedCreateInput) {
     const discipline: Discipline = {
       id: randomUUID(),
@@ -227,7 +229,17 @@ export class InMemoryDisciplineRepository implements IDisciplineRepository {
         userId: reaction.userId,
         createdAt: new Date(),
         updatedAt: new Date(),
+        reviewId: null,
       })),
     });
+  }
+  async findDisciplineWtithReview(disciplineId: string, userId?: string) {
+    const review = this.items.find((item) =>
+      item.review?.find(
+        (review) =>
+          review.disciplineId === disciplineId && review.userId === userId,
+      ),
+    );
+    return review ?? null;
   }
 }

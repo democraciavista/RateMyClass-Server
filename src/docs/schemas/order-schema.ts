@@ -13,7 +13,7 @@ export const orderSchema = {
     },
     status: {
       type: 'string',
-      enum: $Enums.OrderStatus,
+      enum: $Enums.ReactionType,
     },
     total: {
       type: 'number',

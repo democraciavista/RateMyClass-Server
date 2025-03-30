@@ -13,13 +13,13 @@ import { DisciplineUpdateDTO } from '@DTOs/discipline/update';
 import { DisciplineGetAllWithFiltrerDTO } from '@DTOs/discipline/getAllWithFiltrer';
 import { DisciplineGetAllFavoriteWithFiltrerDTO } from '@DTOs/discipline/getAllFavoriteWithFiltrer';
 
-class DisciplinaController {
+class DisciplineController {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { center, code, course, hours, name, professor, type, period } =
         DisciplineRegisterDTO.parse(req.body);
       const registerDisciplinaUseCase = makeRegisterDisciplineUseCase();
-      const disciplina = await registerDisciplinaUseCase.execute({
+      const { discipline } = await registerDisciplinaUseCase.execute({
         center,
         code,
         course,
@@ -29,12 +29,14 @@ class DisciplinaController {
         type,
         period,
       });
-      res.status(201).json({
+      res.locals = {
+        status: 201,
         message: 'Disciplina criada com sucesso',
-        disciplina,
-      });
+        data: discipline,
+      };
+      return next();
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -42,23 +44,30 @@ class DisciplinaController {
     try {
       const { id } = req.params;
       const getDisciplinaByIdUseCase = makeGetDisciplineByIdUseCase();
-      const disciplina = await getDisciplinaByIdUseCase.execute(id);
-      res.status(200).json({
+      const { discipline } = await getDisciplinaByIdUseCase.execute(id);
+      res.locals = {
+        status: 200,
         message: 'Disciplina encontrada',
-        disciplina,
-      });
+        data: discipline,
+      };
+      return next();
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const getAllDisciplinasUseCase = makeGetAllDisciplineUseCase();
-      const disciplinas = await getAllDisciplinasUseCase.execute();
-      res.status(200).json(disciplinas);
+      const { disciplines } = await getAllDisciplinasUseCase.execute();
+      res.locals = {
+        status: 200,
+        message: 'Disciplinas encontradas',
+        data: disciplines,
+      };
+      return next();
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -67,14 +76,16 @@ class DisciplinaController {
       const { id } = req.params;
       const data = DisciplineUpdateDTO.parse(req.body);
       const updateDisciplinaUseCase = makeUpdateDisciplineUseCase();
-      const disciplina = await updateDisciplinaUseCase.execute(id, data);
-      res.status(200).json({
+      const { discipline } = await updateDisciplinaUseCase.execute(id, data);
+
+      res.locals = {
+        status: 200,
         message: 'Disciplina atualizada com sucesso',
-        disciplina,
-      });
-      next();
+        data: discipline,
+      };
+      return next();
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 
@@ -83,9 +94,13 @@ class DisciplinaController {
       const { id } = req.params;
       const deleteDisciplinaUseCase = makeDeleteDisciplinaUseCase();
       await deleteDisciplinaUseCase.execute(id);
-      res.status(204).send();
+      res.locals = {
+        status: 204,
+        message: 'Disciplina deletada com sucesso',
+      };
+      return next();
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
   async getAllByFiltres(req: Request, res: Response, next: NextFunction) {
@@ -93,7 +108,7 @@ class DisciplinaController {
       const data = DisciplineGetAllWithFiltrerDTO.parse(req.query);
       const getAllByFiltresDisciplinaUseCase =
         makeGetAllByFiltresDisciplineUseCase();
-      const disciplinas = await getAllByFiltresDisciplinaUseCase.execute({
+      const { disciplines } = await getAllByFiltresDisciplinaUseCase.execute({
         center: data.center,
         course: data.course,
         code: data.code,
@@ -104,10 +119,17 @@ class DisciplinaController {
         ordem: data.ordem,
         ordemBy: data.ordemBy,
       });
-      res.status(200).json(disciplinas);
-      next();
+
+      res.locals = {
+        status: 200,
+        message: 'Disciplinas encontradas com sucesso',
+        data: disciplines,
+      };
+
+      console.log('💜💜💜💜');
+      return next();
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
   async getAllFavoriteByFiltres(
@@ -119,7 +141,7 @@ class DisciplinaController {
       const data = DisciplineGetAllFavoriteWithFiltrerDTO.parse(req.query);
       const getAllByFiltresDisciplinaUseCase =
         makeGetAllFavoriteByFiltresUseCase();
-      const disciplinas = await getAllByFiltresDisciplinaUseCase.execute({
+      const { disciplines } = await getAllByFiltresDisciplinaUseCase.execute({
         center: data.center,
         course: data.course,
         code: data.code,
@@ -131,12 +153,16 @@ class DisciplinaController {
         ordemBy: data.ordemBy,
         userId: data.userId,
       });
-      res.status(200).json(disciplinas);
-      next();
+      res.locals = {
+        status: 200,
+        message: 'Disciplinas favoritas encontradas com sucesso',
+        data: disciplines,
+      };
+      return next();
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 }
 
-export const disciplinaController = new DisciplinaController();
+export const disciplineController = new DisciplineController();

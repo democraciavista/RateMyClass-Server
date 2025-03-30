@@ -40,7 +40,8 @@ export class AuthenticateUseCase {
         const now = new Date();
         const emailVerifyTokenExpiry = now.setHours(now.getHours() + 1);
 
-        this.emailVerificationSender.sendVerificationEmail(token, email);
+        this.emailVerificationSender.sendVerificationEmail(token, email)
+        ;
         await this.userRepository.save(user.id, {
           emailVerificationToken: hashedToken,
           emailTokenExpiry: new Date(emailVerifyTokenExpiry),
