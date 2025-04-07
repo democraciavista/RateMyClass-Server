@@ -2,6 +2,9 @@
 Plataforma sem fins lucrativos para avaliação de disciplinas e professores, além do compartilhamento de materiais acadêmicos.
 O projeto foi desenvolvido para a disciplina "IF977 Engenharia de Software" do curso de Sistemas de Informação da UFPE no período 2024.2.
 
+[Código em execução](https://ratemyclass-server.onrender.com).
+(Pode demorar um pouco para abrir pois o servidor fica inativo.
+
 ## Stack for this project
 
 1. Typescript;
