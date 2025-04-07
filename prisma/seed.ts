@@ -257,7 +257,7 @@ async function main() {
     const difficultyLevel = getRandomInt(1, 10) / 2; // Score from 0.5 to 5.0
     const disciplineScore = getRandomInt(1, 10) / 2; // Score from 0.5 to 5.0
     
-    const periodOptions = ['2023.1', '2023.2', '2024.1'];
+    const periodOptions = [20231, 20232, 20241];
     
     const review = await prisma.review.create({
       data: {

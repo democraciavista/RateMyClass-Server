@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const DisciplineGetAllWithFiltrerDTO = z.object({
+  userId: z.string(),
   code: z.string(),
   name: z.string(),
   professor: z.string(),

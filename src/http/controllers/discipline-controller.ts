@@ -109,6 +109,7 @@ class DisciplineController {
       const getAllByFiltresDisciplinaUseCase =
         makeGetAllByFiltresDisciplineUseCase();
       const { disciplines } = await getAllByFiltresDisciplinaUseCase.execute({
+        userId: data.userId || '',
         center: data.center,
         course: data.course,
         code: data.code,

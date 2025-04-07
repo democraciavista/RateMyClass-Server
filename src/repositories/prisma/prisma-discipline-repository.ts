@@ -1,10 +1,26 @@
 import prisma from '@database';
-import { $Enums, Prisma } from '@prisma/client';
+import {
+  $Enums,
+  Discipline,
+  Prisma,
+  Reaction,
+  Review,
+  Statistic,
+} from '@prisma/client';
 import { IDisciplineRepository } from '@repositories/interface/discipline-repository';
 
 export class PrismaDisciplineRepository implements IDisciplineRepository {
-  async findById(id: string) {
-    const discipline = await prisma.discipline.findUnique({ where: { id } });
+  async findById(id: string): Promise<
+    | (Discipline & {
+        reviews: Review[];
+        statistics: Statistic | null;
+      })
+    | null
+  > {
+    const discipline = await prisma.discipline.findUnique({
+      where: { id },
+      include: { statistics: true, reviews: true },
+    });
     return discipline;
   }
   async create(data: Prisma.DisciplineCreateInput) {
@@ -34,6 +50,7 @@ export class PrismaDisciplineRepository implements IDisciplineRepository {
     return discipline;
   }
   async findByFiltres(
+    userId: string,
     name?: string,
     code?: string,
     course?: string,
@@ -43,7 +60,12 @@ export class PrismaDisciplineRepository implements IDisciplineRepository {
     type?: $Enums.CourseType,
     ordem?: Prisma.SortOrder,
     ordemBy?: string,
-  ) {
+  ): Promise<
+    (Discipline & {
+      reactions: Reaction[];
+      statistics: Statistic | null;
+    })[]
+  > {
     const disciplines = await prisma.discipline.findMany({
       where: {
         name: name ? { contains: name } : undefined,
@@ -53,6 +75,15 @@ export class PrismaDisciplineRepository implements IDisciplineRepository {
         center: center ? { contains: center } : undefined,
         period: period ? { equals: period } : undefined,
         type: type ? { equals: type } : undefined,
+      },
+      include: {
+        reactions: {
+          where: {
+            userId: userId,
+            type: 'FAVORITE',
+          },
+        },
+        statistics: true,
       },
       orderBy: {
         [ordemBy || 'createdAt']: ordem || 'asc',
@@ -71,7 +102,12 @@ export class PrismaDisciplineRepository implements IDisciplineRepository {
     type?: $Enums.CourseType,
     ordem?: Prisma.SortOrder,
     ordemBy?: string,
-  ) {
+  ): Promise<
+    (Discipline & {
+      reactions: Reaction[];
+      statistics: Statistic | null;
+    })[]
+  > {
     const disciplines = await prisma.discipline.findMany({
       where: {
         name: name ? { contains: name } : undefined,
@@ -89,6 +125,10 @@ export class PrismaDisciplineRepository implements IDisciplineRepository {
             },
           },
         },
+      },
+      include: {
+        reactions: true,
+        statistics: true,
       },
       orderBy: {
         [ordemBy || 'createdAt']: ordem || 'asc',

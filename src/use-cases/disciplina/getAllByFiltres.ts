@@ -2,6 +2,7 @@ import { $Enums, Discipline, Prisma } from '@prisma/client';
 import { IDisciplineRepository } from '@repositories/interface/discipline-repository';
 
 interface GetAllByFiltresDisciplineUseCaseRequest {
+  userId: string;
   name?: string;
   code?: string;
   course?: string;
@@ -20,6 +21,7 @@ export class GetAllByFiltresDisciplineUseCase {
   constructor(private disciplineRepository: IDisciplineRepository) {}
 
   async execute({
+    userId,
     center,
     code,
     course,
@@ -32,6 +34,7 @@ export class GetAllByFiltresDisciplineUseCase {
   }: GetAllByFiltresDisciplineUseCaseRequest): Promise<GetAllByFiltresDisciplineUseCaseResponse> {
     try {
       const disciplines = await this.disciplineRepository.findByFiltres(
+        userId,
         name,
         code,
         course,
