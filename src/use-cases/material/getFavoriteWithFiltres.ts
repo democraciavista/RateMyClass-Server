@@ -21,7 +21,7 @@ export class GetFavoriteWithFiltresMaterialUseCase {
     data: GetFavoriteWithFiltresMaterialUseCaseRequest,
   ): Promise<RegisterMaterialUseCaseResponse> {
     try {
-      const material = await this.materialRepository.findFavoriteByFiltres(
+      const materialData = await this.materialRepository.findFavoriteByFiltres(
         data.userId,
         data.title,
         data.disciplina,
@@ -30,6 +30,21 @@ export class GetFavoriteWithFiltresMaterialUseCase {
         data.ordem,
         data.ordemBy,
       );
+        const material =materialData.map((item) => ({
+          ...item,
+          reviewsLike: item.reactions.filter(
+            (reaction) => reaction.type === 'LIKE',
+          ),
+          reviewsFavorite: item.reactions.filter(
+            (reaction) => reaction.type === 'FAVORITE',
+          ),
+          reviewsReport: item.reactions.filter(
+            (reaction) => reaction.type === 'REPORT',
+          ),
+          reviewsLikeCount: item.reactions.filter(
+            (reaction) => reaction.type === 'LIKE',
+          ).length,
+        }));
       return { material };
     } catch (error) {
       throw error;

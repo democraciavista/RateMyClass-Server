@@ -19,7 +19,11 @@
     "lint:fix": "eslint ./src --ext .ts --fix",
     "typecheck": "tsc --noEmit --skipLibCheck",
     "test": "vitest run --dir ./src/use-cases",
+    "db:seed": "cross-env DATABASE_HOST='localhost' prisma db seed",
     "test:ci": "cross-env EMAIL=teste.damatta@gmail.ecom EMAIL_PASSWORD='bhyp tggt gkbf dpxc' vitest run --dir ./src/use-cases"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
@@ -47,6 +51,7 @@
     "eslint-plugin-security": "^2.1.1",
     "prisma": "^6.5.0",
     "prisma-dbml-generator": "^0.12.0",
+    "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "tsup": "^8.0.2",
     "tsx": "^4.7.1",

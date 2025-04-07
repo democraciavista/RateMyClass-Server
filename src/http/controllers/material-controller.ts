@@ -56,10 +56,11 @@ class MaterialControler {
 
   async getAllWithFilters(req: Request, res: Response, next: NextFunction) {
     try {
-      const { curso, disciplina, ordem, ordemBy, professor, title } =
+      const { curso, disciplina, ordem, ordemBy, professor, title ,userId} =
         MaterialGetWithFilterSchema.parse(req.query);
       const getAllUseCase = makeGetAllWithFiltresMaterialUseCase();
       const materials = await getAllUseCase.execute({
+        userId: userId || '',
         curso,
         disciplina,
         ordem,

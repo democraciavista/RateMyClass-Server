@@ -1,25 +1,16 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 import { compare } from 'bcryptjs';
-
 import { InMemoryUserRepository } from '@repositories/in-memory/in-memory-user-repository';
-
 import { AlreadyExistsError } from '@errors/already-exists-error';
-
 import { RegisterUseCase } from './register';
-import { EmailVerificationSender } from '@services/email-verification-sender';
-import { genToken } from '@utils/genToken';
 
 let userRepository: InMemoryUserRepository;
 let sut: RegisterUseCase;
-let EmailSender: EmailVerificationSender;
-let generateToken: () => Promise<{ token: string; hashedToken: string }>;
 
 describe('Register Use Case', () => {
   beforeEach(() => {
-    EmailSender = new EmailVerificationSender();
     userRepository = new InMemoryUserRepository();
-    generateToken = genToken;
-    sut = new RegisterUseCase(userRepository, EmailSender, generateToken);
+    sut = new RegisterUseCase(userRepository);
   });
 
   it('should register a new user', async () => {

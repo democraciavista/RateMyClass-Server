@@ -7,6 +7,7 @@ import { VerifyPasswordSchema } from '@DTOs/user/verify-password';
 import {
   makeUserAuthenticateUseCase,
   makeUserDeleteUseCase,
+  makeUserFirstAcessUseCase,
   makeUserGetAll,
   makeUserGetByIdUseCase,
   makeUserRegisterUseCase,
@@ -91,6 +92,23 @@ class UserController {
 
       res.status(200).json({
         message: 'E-mail de recuperação de senha enviado com sucesso!',
+      });
+
+      return next();
+    } catch (error) {
+      return next(error);
+    }
+  }
+  async firstAcess(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email } = req.body;
+
+      const firstAcessUseCase = makeUserFirstAcessUseCase();
+
+      await firstAcessUseCase.execute({ email });
+
+      res.status(200).json({
+        message: 'E-mail de Autenticação de senha enviado com sucesso!',
       });
 
       return next();

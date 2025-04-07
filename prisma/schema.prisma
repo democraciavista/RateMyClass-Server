@@ -115,6 +115,8 @@ model Review {
   droppedOut             Boolean   @map("dropped_out")
   difficultyLevel        Float       @map("difficulty_level")
   disciplineScore        Float     @map("discipline_score")
+  wentToRecovery      Boolean   @map("went_to_recovery") @default(false)
+  failedBefore        Boolean   @map("failed_before")@default(false)
   comment                String?
   recommendation         String?
   createdAt              DateTime  @default(now()) @map("created_at")

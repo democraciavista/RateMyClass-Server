@@ -10,6 +10,7 @@ userRouter.route('/').get(UserController.getAll);
 userRouter.route('/verify-email').post(UserController.verifyEmail);
 userRouter.route('/verify-password').post(UserController.verifyPassword);
 userRouter.route('/reset-password').post(UserController.resetPassword);
+userRouter.route('/first-acess').post(UserController.firstAcess);
 userRouter.route('/sessions').post(UserController.authenticate);
 userRouter.route('/:id').delete([verifyPermission], UserController.delete);
 userRouter.route('/:id').get([verifyPermission], UserController.getById);

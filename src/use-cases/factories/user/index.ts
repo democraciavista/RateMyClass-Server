@@ -7,7 +7,10 @@ import { makeUserDeleteUseCase } from './make-user-delete-use-case';
 import { makeUserUpdateUseCase } from './make-user-update-use-case';
 import { makeUserGetByIdUseCase } from './make-user-get-by-id-use-case';
 import { makeUserGetAll } from './make-user-get-all-use-case';
+import { makeUserFirstAcessUseCase } from './make-user-first-acess-use-case';
+
 export {
+  makeUserFirstAcessUseCase,
   makeUserAuthenticateUseCase,
   makeUserRegisterUseCase,
   makeUserVerifyEmailUseCase,

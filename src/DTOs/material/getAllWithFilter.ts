@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const MaterialGetWithFilterSchema= z.object({
+    userId:z.string(),
    title:z.string(),
     disciplina:z.string(),
     curso:z.string(),

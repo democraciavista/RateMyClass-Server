@@ -13,6 +13,8 @@ export class InMemoryReviewRepository implements IReviewRepository {
       userId: data.userId || randomUUID(),
       createdAt: new Date(),
       updatedAt: new Date(),
+      failedBefore: data.failedBefore || false,
+      wentToRecovery: data.wentToRecovery || false,
       disciplineId: data.disciplineId || randomUUID(),
       difficultyLevel: data.difficultyLevel,
       disciplineScore: data.disciplineScore,

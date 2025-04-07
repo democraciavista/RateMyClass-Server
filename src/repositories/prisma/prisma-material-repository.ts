@@ -1,5 +1,5 @@
 import prisma from '@database';
-import { Material, Prisma } from '@prisma/client';
+import { Discipline, Material, Prisma, Reaction } from '@prisma/client';
 import { IMaterialRepository } from '@repositories/interface/material-repository';
 
 export class PrismaMaterialRepository implements IMaterialRepository {
@@ -40,13 +40,14 @@ export class PrismaMaterialRepository implements IMaterialRepository {
   }
 
   async findByFiltres(
+    userId: string,
     title?: string,
     disciplina?: string,
     curso?: string,
     professor?: string,
     ordem?: Prisma.SortOrder,
     ordemBy?: string,
-  ): Promise<Material[]> {
+  ): Promise<(Material & { discipline: Discipline; reactions: Reaction[] })[]> {
     const materials = await prisma.material.findMany({
       where: {
         title: title ? { contains: title } : undefined,
@@ -56,9 +57,18 @@ export class PrismaMaterialRepository implements IMaterialRepository {
           professor: professor ? { contains: professor } : undefined,
         },
       },
+      include: {
+        reactions: {
+          where: {
+            userId: userId,
+          },
+        },
+        discipline: true,
+      },
+
       orderBy: {
         [ordemBy || 'createdAt']: ordem || 'asc',
-      },
+      } as Record<string, Prisma.SortOrder>,
     });
 
     return materials;
@@ -71,7 +81,7 @@ export class PrismaMaterialRepository implements IMaterialRepository {
     professor?: string,
     ordem?: Prisma.SortOrder,
     ordemBy?: string,
-  ): Promise<Material[]> {
+  ): Promise<(Material & { discipline: Discipline; reactions: Reaction[] })[]> {
     const materials = await prisma.material.findMany({
       where: {
         title: title ? { contains: title } : undefined,
@@ -88,6 +98,10 @@ export class PrismaMaterialRepository implements IMaterialRepository {
             },
           },
         },
+      },
+      include: {
+        discipline: true,
+        reactions: true,
       },
       orderBy: {
         [ordemBy || 'createdAt']: ordem || 'asc',
