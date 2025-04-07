@@ -1,4 +1,6 @@
-
+# BACKEND - Rate my Class
+Plataforma sem fins lucrativos para avaliação de disciplinas e professores, além do compartilhamento de materiais acadêmicos.
+O projeto foi desenvolvido para a disciplina "IF977 Engenharia de Software" do curso de Sistemas de Informação da UFPE no período 2024.2.
 
 ## Stack for this project
 
